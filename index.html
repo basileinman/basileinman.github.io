@@ -185,7 +185,8 @@ nav {
   overflow: hidden;
 }
 .video-featured iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-.video-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+.video-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+@media (max-width: 900px) { .video-grid { grid-template-columns: 1fr; } }
 .video-item { position: relative; }
 .video-embed-wrap {
   position: relative; width: 100%; padding-top: 56.25%;
@@ -197,14 +198,6 @@ nav {
 
 /* ── CAD SECTION ── */
 #cad { border-top: 1px solid var(--line); }
-.cad-note {
-  display: flex; align-items: flex-start; gap: 1rem;
-  background: rgba(201,96,24,0.06); border: 1px solid rgba(201,96,24,0.15);
-  padding: 1rem 1.2rem; margin-bottom: 3rem;
-  font-size: 0.65rem; line-height: 1.7; color: var(--muted);
-}
-.cad-note::before { content: '⚠'; color: var(--orange); flex-shrink: 0; font-size: 0.8rem; }
-.cad-note a { color: var(--orange); }
 .cad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
 .cad-card { background: var(--bg2); border: 1px solid var(--line); overflow: hidden; position: relative; }
 .cad-frame-wrap {
@@ -456,7 +449,7 @@ nav {
     <p class="section-label reveal">03 — Video</p>
     <h2 class="section-title reveal">Produced Work</h2>
 
-    <!-- Featured: Vimeo -->
+    <!-- Featured: Vimeo 1 -->
     <div class="reveal">
       <div class="video-featured">
         <iframe src="https://player.vimeo.com/video/881477484?color=c96018&title=0&byline=0&portrait=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
@@ -464,8 +457,14 @@ nav {
       <div class="video-label"><strong>Featured</strong>Vimeo · 2023</div>
     </div>
 
-    <!-- YouTube pair -->
+    <!-- Vimeo 2 + YouTube pair -->
     <div class="video-grid" style="margin-top:2.5rem;">
+      <div class="video-item reveal">
+        <div class="video-embed-wrap">
+          <iframe src="https://player.vimeo.com/video/1194886351?color=c96018&title=0&byline=0&portrait=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <div class="video-label"><strong>Vimeo</strong>Vimeo · 2024</div>
+      </div>
       <div class="video-item reveal">
         <div class="video-embed-wrap">
           <iframe src="https://www.youtube.com/embed/uj3s_Yj5QKE?rel=0&modestbranding=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -488,9 +487,6 @@ nav {
     <p class="section-label reveal">04 — 3D Models</p>
     <h2 class="section-title reveal">CAD Work</h2>
 
-    <div class="cad-note reveal">
-      To enable interactive 3D viewing: in Onshape, open each document → Share → make Public. Once public, the models will load as live interactive viewers below. <a href="https://cad.onshape.com" target="_blank">cad.onshape.com →</a>
-    </div>
 
     <div class="cad-grid">
 
