@@ -30,10 +30,9 @@ body {
   color: var(--text);
   font-family: 'IBM Plex Mono', monospace;
   overflow-x: hidden;
-  cursor: none;
 }
 
-/* ── GRAIN OVERLAY ── */
+/* ── GRAIN ── */
 body::after {
   content: '';
   position: fixed; inset: 0;
@@ -43,588 +42,318 @@ body::after {
   z-index: 9998;
 }
 
-/* ── CURSOR ── */
-#cursor {
-  position: fixed;
-  width: 22px; height: 22px;
-  pointer-events: none;
-  z-index: 9999;
-  transform: translate(-50%,-50%);
-  transition: opacity 0.2s;
-}
-#cursor-dot {
-  position: fixed;
-  width: 4px; height: 4px;
-  border-radius: 50%;
-  background: var(--orange);
-  pointer-events: none;
-  z-index: 9999;
-  transform: translate(-50%,-50%);
+/* ── CURSOR (desktop pointer only) ── */
+#cursor, #cursor-dot { display: none; }
+@media (hover: hover) and (pointer: fine) {
+  body { cursor: none; }
+  #cursor {
+    display: block; position: fixed;
+    width: 22px; height: 22px;
+    pointer-events: none; z-index: 9999;
+    transform: translate(-50%,-50%); transition: opacity 0.2s;
+  }
+  #cursor-dot {
+    display: block; position: fixed;
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--orange); pointer-events: none;
+    z-index: 9999; transform: translate(-50%,-50%);
+  }
 }
 
 /* ── NAV ── */
 nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 500;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+  display: flex; justify-content: space-between; align-items: center;
   padding: 1.8rem 5vw;
   background: linear-gradient(to bottom, rgba(12,12,9,0.95) 0%, transparent 100%);
+  transition: background 0.3s;
 }
 .nav-logo {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.3rem;
-  letter-spacing: 0.15em;
-  color: var(--cream);
-  text-decoration: none;
+  font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem;
+  letter-spacing: 0.15em; color: var(--cream); text-decoration: none;
 }
 .nav-links { display: flex; gap: 2.5rem; }
 .nav-links a {
-  font-size: 0.6rem;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: var(--muted);
-  text-decoration: none;
-  transition: color 0.2s;
-  position: relative;
+  font-size: 0.6rem; letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--muted); text-decoration: none; transition: color 0.2s; position: relative;
 }
 .nav-links a::after {
-  content: '';
-  position: absolute;
-  bottom: -4px; left: 0;
-  width: 0; height: 1px;
-  background: var(--orange);
-  transition: width 0.25s ease;
+  content: ''; position: absolute; bottom: -4px; left: 0;
+  width: 0; height: 1px; background: var(--orange); transition: width 0.25s ease;
 }
 .nav-links a:hover { color: var(--text); }
 .nav-links a:hover::after { width: 100%; }
 
 /* ── HERO ── */
 #hero {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 0 5vw 8vh;
-  position: relative;
-  overflow: hidden;
+  min-height: 100vh; display: flex; flex-direction: column;
+  justify-content: flex-end; padding: 0 5vw 8vh; position: relative; overflow: hidden;
 }
-
 .hero-topo {
   position: absolute; inset: 0;
   background:
-    repeating-linear-gradient(
-      18deg,
-      transparent,
-      transparent 38px,
-      rgba(62,110,74,0.06) 38px,
-      rgba(62,110,74,0.06) 39px
-    ),
-    repeating-linear-gradient(
-      -12deg,
-      transparent,
-      transparent 60px,
-      rgba(201,96,24,0.03) 60px,
-      rgba(201,96,24,0.03) 61px
-    );
+    repeating-linear-gradient(18deg, transparent, transparent 38px, rgba(62,110,74,0.06) 38px, rgba(62,110,74,0.06) 39px),
+    repeating-linear-gradient(-12deg, transparent, transparent 60px, rgba(201,96,24,0.03) 60px, rgba(201,96,24,0.03) 61px);
   pointer-events: none;
 }
-
 .hero-corner {
-  position: absolute;
-  top: 2rem; right: 5vw;
-  font-size: 0.55rem;
-  letter-spacing: 0.3em;
-  color: var(--muted);
-  text-transform: uppercase;
-  writing-mode: vertical-rl;
-  opacity: 0;
-  animation: fadeIn 1s ease 1.5s forwards;
-  line-height: 2;
+  position: absolute; top: 2rem; right: 5vw;
+  font-size: 0.55rem; letter-spacing: 0.3em; color: var(--muted);
+  text-transform: uppercase; writing-mode: vertical-rl; line-height: 2;
+  opacity: 0; animation: fadeIn 1s ease 1.5s forwards;
 }
-
 .hero-eyebrow {
-  font-size: 0.65rem;
-  letter-spacing: 0.35em;
-  text-transform: uppercase;
-  color: var(--orange);
-  margin-bottom: 1.5rem;
-  opacity: 0;
-  animation: slideUp 0.8s ease 0.2s forwards;
+  font-size: 0.65rem; letter-spacing: 0.35em; text-transform: uppercase;
+  color: var(--orange); margin-bottom: 1.5rem;
+  opacity: 0; animation: slideUp 0.8s ease 0.2s forwards;
   display: flex; align-items: center; gap: 1rem;
 }
 .hero-eyebrow::before {
-  content: '';
-  width: 32px; height: 1px;
-  background: var(--orange);
-  display: inline-block;
+  content: ''; width: 32px; height: 1px; background: var(--orange); display: inline-block;
 }
-
 .hero-name {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(72px, 16vw, 200px);
-  line-height: 0.85;
-  letter-spacing: -0.01em;
-  opacity: 0;
-  animation: slideUp 0.9s ease 0.4s forwards;
+  font-size: clamp(72px, 16vw, 200px); line-height: 0.85; letter-spacing: -0.01em;
+  opacity: 0; animation: slideUp 0.9s ease 0.4s forwards;
 }
 .hero-name .line1 { color: var(--cream); display: block; }
-.hero-name .line2 {
-  color: transparent;
-  -webkit-text-stroke: 1px rgba(237,227,204,0.25);
-  display: block;
-}
-
+.hero-name .line2 { color: transparent; -webkit-text-stroke: 1px rgba(237,227,204,0.25); display: block; }
 .hero-bottom {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-top: 3rem;
-  opacity: 0;
-  animation: slideUp 0.8s ease 0.8s forwards;
+  display: flex; justify-content: space-between; align-items: flex-end; margin-top: 3rem;
+  opacity: 0; animation: slideUp 0.8s ease 0.8s forwards;
 }
+.hero-role { display: flex; align-items: center; gap: 1.2rem; font-size: clamp(0.75rem, 1.5vw, 1rem); color: var(--muted); letter-spacing: 0.12em; }
+.hero-role-current { color: var(--text); min-width: 180px; display: inline-block; transition: opacity 0.35s ease, transform 0.35s ease; }
+.hero-scroll { font-size: 0.55rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--muted); display: flex; flex-direction: column; align-items: flex-end; gap: 0.6rem; }
+.hero-scroll-line { width: 1px; height: 50px; background: linear-gradient(to bottom, var(--orange), transparent); animation: scrollPulse 2s ease-in-out infinite; }
+@keyframes scrollPulse { 0%,100%{opacity:0.4;transform:scaleY(1)} 50%{opacity:1;transform:scaleY(1.2)} }
 
-.hero-role {
-  display: flex;
-  align-items: center;
-  gap: 1.2rem;
-  font-size: clamp(0.75rem, 1.5vw, 1rem);
-  color: var(--muted);
-  letter-spacing: 0.12em;
-}
-.hero-role-current {
-  color: var(--text);
-  min-width: 180px;
-  display: inline-block;
-  transition: opacity 0.35s ease, transform 0.35s ease;
-}
-
-.hero-scroll {
-  font-size: 0.55rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--muted);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.6rem;
-}
-.hero-scroll-line {
-  width: 1px; height: 50px;
-  background: linear-gradient(to bottom, var(--orange), transparent);
-  animation: scrollPulse 2s ease-in-out infinite;
-}
-
-@keyframes scrollPulse {
-  0%,100% { opacity: 0.4; transform: scaleY(1); }
-  50% { opacity: 1; transform: scaleY(1.2); }
-}
-
-/* ── COMMON SECTION ── */
-.section-wrap {
-  padding: 8rem 5vw;
-  position: relative;
-}
-
-.section-label {
-  font-size: 0.58rem;
-  letter-spacing: 0.35em;
-  text-transform: uppercase;
-  color: var(--orange);
-  margin-bottom: 0.6rem;
-}
-
-.section-title {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(36px, 6vw, 72px);
-  color: var(--cream);
-  line-height: 1;
-  margin-bottom: 4rem;
-}
+/* ── SECTION BASE ── */
+.section-wrap { padding: 8rem 5vw; position: relative; }
+.section-label { font-size: 0.58rem; letter-spacing: 0.35em; text-transform: uppercase; color: var(--orange); margin-bottom: 0.6rem; }
+.section-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(36px, 6vw, 72px); color: var(--cream); line-height: 1; margin-bottom: 4rem; }
 
 /* ── ZONES ── */
 #zones { background: var(--bg2); border-top: 1px solid var(--line); }
-
-.zones-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1px;
-  background: var(--line);
-  outline: 1px solid var(--line);
-}
-
-.zone {
-  background: var(--bg2);
-  padding: 3.5rem 3rem;
-  position: relative;
-  overflow: hidden;
-  transition: background 0.35s ease;
-}
-
+.zones-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--line); outline: 1px solid var(--line); }
+.zone { background: var(--bg2); padding: 3.5rem 3rem; position: relative; overflow: hidden; transition: background 0.35s ease; }
 .zone::before {
-  content: attr(data-num);
-  position: absolute;
-  bottom: -30px; right: 20px;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 130px;
-  line-height: 1;
-  color: rgba(255,255,255,0.025);
-  pointer-events: none;
-  transition: transform 0.5s ease, color 0.3s;
+  content: attr(data-num); position: absolute; bottom: -30px; right: 20px;
+  font-family: 'Bebas Neue', sans-serif; font-size: 130px; line-height: 1;
+  color: rgba(255,255,255,0.025); pointer-events: none; transition: transform 0.5s ease, color 0.3s;
 }
-
 .zone:hover { background: #161611; }
 .zone:hover::before { transform: translateY(-8px); color: rgba(255,255,255,0.04); }
-
-.zone-accent-bar {
-  position: absolute;
-  top: 0; left: 0;
-  width: 3px; height: 0;
-  transition: height 0.4s ease;
-}
+.zone-accent-bar { position: absolute; top: 0; left: 0; width: 3px; height: 0; transition: height 0.4s ease; }
 .zone:hover .zone-accent-bar { height: 100%; }
-
-.zone.z-outdoors  .zone-accent-bar { background: var(--green); }
+.zone.z-outdoors .zone-accent-bar { background: var(--green); }
 .zone.z-creative  .zone-accent-bar { background: var(--amber); }
 .zone.z-music     .zone-accent-bar { background: var(--purple); }
 .zone.z-craft     .zone-accent-bar { background: var(--metal); }
-
-.zone-glyph {
-  width: 40px; height: 40px;
-  margin-bottom: 2rem;
-  opacity: 0.7;
-}
-
-.zone-cat {
-  font-size: 0.58rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  margin-bottom: 0.8rem;
-  color: var(--muted);
-  transition: color 0.25s;
-}
-.zone.z-outdoors:hover  .zone-cat { color: var(--green); }
-.zone.z-creative:hover  .zone-cat { color: var(--amber); }
-.zone.z-music:hover     .zone-cat { color: #9b7abf; }
-.zone.z-craft:hover     .zone-cat { color: var(--metal); }
-
-.zone-name {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: clamp(1.8rem, 3vw, 2.6rem);
-  font-weight: 700;
-  color: var(--cream);
-  line-height: 1.1;
-  margin-bottom: 1.2rem;
-}
-
-.zone-desc {
-  font-size: 0.72rem;
-  line-height: 1.95;
-  color: var(--muted);
-}
-
-.zone-pills {
-  display: flex; flex-wrap: wrap; gap: 0.4rem;
-  margin-top: 1.8rem;
-}
-.zone-pill {
-  font-size: 0.52rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 0.3rem 0.65rem;
-  border: 1px solid rgba(255,255,255,0.08);
-  color: var(--muted);
-  border-radius: 1px;
-}
+.zone-glyph { width: 40px; height: 40px; margin-bottom: 2rem; opacity: 0.7; }
+.zone-cat { font-size: 0.58rem; letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 0.8rem; color: var(--muted); transition: color 0.25s; }
+.zone.z-outdoors:hover .zone-cat { color: var(--green); }
+.zone.z-creative:hover .zone-cat { color: var(--amber); }
+.zone.z-music:hover    .zone-cat { color: #9b7abf; }
+.zone.z-craft:hover    .zone-cat { color: var(--metal); }
+.zone-name { font-family: 'Barlow Condensed', sans-serif; font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 700; color: var(--cream); line-height: 1.1; margin-bottom: 1.2rem; }
+.zone-desc { font-size: 0.72rem; line-height: 1.95; color: var(--muted); }
+.zone-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1.8rem; }
+.zone-pill { font-size: 0.52rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.3rem 0.65rem; border: 1px solid rgba(255,255,255,0.08); color: var(--muted); }
+.zone-coming { position: absolute; top: 1.2rem; right: 1.2rem; font-size: 0.48rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--line); padding: 0.25rem 0.5rem; }
 
 /* ── ABOUT ── */
 #about { border-top: 1px solid var(--line); }
-
-.about-grid {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr;
-  gap: 8rem;
-  align-items: start;
-}
-
-.about-body {
-  font-size: 0.82rem;
-  line-height: 2.1;
-  color: var(--muted);
-}
+.about-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 8rem; align-items: start; }
+.about-body { font-size: 0.82rem; line-height: 2.1; color: var(--muted); }
 .about-body strong { color: var(--text); font-weight: 500; }
 .about-body em { color: var(--orange); font-style: normal; }
-
 .about-stats { display: flex; flex-direction: column; gap: 2.5rem; }
-
 .stat { padding-bottom: 2rem; border-bottom: 1px solid var(--line); }
 .stat:last-child { border: none; }
+.stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 4rem; color: var(--orange); line-height: 1; letter-spacing: 0.02em; }
+.stat-lbl { font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); margin-top: 0.4rem; }
+.awards-row { margin-top: 3rem; display: flex; flex-direction: column; gap: 1rem; }
+.award { display: flex; align-items: flex-start; gap: 1rem; font-size: 0.72rem; color: var(--muted); line-height: 1.6; }
+.award::before { content: '★'; color: var(--amber); flex-shrink: 0; margin-top: 0.1rem; }
 
-.stat-val {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 4rem;
-  color: var(--orange);
-  line-height: 1;
-  letter-spacing: 0.02em;
+/* ── VIDEO SECTION ── */
+#video { background: var(--bg2); border-top: 1px solid var(--line); }
+.video-featured {
+  position: relative; width: 100%; padding-top: 56.25%;
+  background: #0a0a08; border: 1px solid var(--line); margin-bottom: 1.5rem;
+  overflow: hidden;
 }
+.video-featured iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.video-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+.video-item { position: relative; }
+.video-embed-wrap {
+  position: relative; width: 100%; padding-top: 56.25%;
+  background: #0a0a08; border: 1px solid var(--line); overflow: hidden;
+}
+.video-embed-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.video-label { margin-top: 0.8rem; font-size: 0.62rem; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; }
+.video-label strong { color: var(--text); display: block; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: none; margin-bottom: 0.2rem; font-weight: 400; }
 
-.stat-lbl {
-  font-size: 0.6rem;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-top: 0.4rem;
-}
-
-.awards-row {
-  margin-top: 3rem;
-  display: flex; flex-direction: column; gap: 1rem;
-}
-.award {
+/* ── CAD SECTION ── */
+#cad { border-top: 1px solid var(--line); }
+.cad-note {
   display: flex; align-items: flex-start; gap: 1rem;
-  font-size: 0.72rem; color: var(--muted); line-height: 1.6;
+  background: rgba(201,96,24,0.06); border: 1px solid rgba(201,96,24,0.15);
+  padding: 1rem 1.2rem; margin-bottom: 3rem;
+  font-size: 0.65rem; line-height: 1.7; color: var(--muted);
 }
-.award::before {
-  content: '★';
-  color: var(--amber);
-  flex-shrink: 0;
-  margin-top: 0.1rem;
+.cad-note::before { content: '⚠'; color: var(--orange); flex-shrink: 0; font-size: 0.8rem; }
+.cad-note a { color: var(--orange); }
+.cad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+.cad-card { background: var(--bg2); border: 1px solid var(--line); overflow: hidden; position: relative; }
+.cad-frame-wrap {
+  position: relative; width: 100%; padding-top: 75%;
+  background: #080808; overflow: hidden;
 }
+.cad-frame-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.cad-info { padding: 1.2rem 1.4rem; border-top: 1px solid var(--line); }
+.cad-name { font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--cream); margin-bottom: 0.3rem; }
+.cad-meta { font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--metal); }
+.cad-link {
+  display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 0.8rem;
+  font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--orange); text-decoration: none; transition: gap 0.2s;
+}
+.cad-link:hover { gap: 0.7rem; }
+
+/* ── PROJECTS ── */
+#projects { background: var(--bg2); border-top: 1px solid var(--line); }
+.projects-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+.project-card {
+  border: 1px solid var(--line); position: relative; overflow: hidden;
+  text-decoration: none; display: block; background: var(--bg2);
+  transition: border-color 0.3s, background 0.3s;
+  group: true;
+}
+.project-card:hover { border-color: #2e2e26; background: #161611; }
+.project-preview {
+  width: 100%; aspect-ratio: 16/9; background: #080808;
+  border-bottom: 1px solid var(--line); overflow: hidden; position: relative;
+}
+.project-preview iframe { width: 100%; height: 100%; border: 0; pointer-events: none; transform-origin: top left; }
+.project-preview .preview-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, transparent 60%, rgba(12,12,9,0.7));
+  pointer-events: none;
+}
+.project-body { padding: 1.8rem 2rem; }
+.project-tag { font-size: 0.52rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--orange); margin-bottom: 0.6rem; }
+.project-name { font-family: 'Barlow Condensed', sans-serif; font-size: 1.6rem; font-weight: 700; color: var(--cream); margin-bottom: 0.7rem; line-height: 1.1; }
+.project-desc { font-size: 0.7rem; line-height: 1.9; color: var(--muted); margin-bottom: 1.2rem; }
+.project-arrow { font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--orange); display: flex; align-items: center; gap: 0.6rem; transition: gap 0.2s; }
+.project-card:hover .project-arrow { gap: 1rem; }
+
+/* Placeholder project card */
+.project-placeholder {
+  border: 1px dashed #2a2a20; display: flex; flex-direction: column;
+  justify-content: center; align-items: center; padding: 4rem 2rem;
+  text-align: center; gap: 1rem; min-height: 280px;
+}
+.project-placeholder .ph-icon { font-size: 2rem; opacity: 0.3; }
+.project-placeholder .ph-label { font-size: 0.62rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); }
+.project-placeholder .ph-sub { font-size: 0.6rem; color: #3a3a30; line-height: 1.7; max-width: 220px; }
 
 /* ── RESUME ── */
-#resume { background: var(--bg2); border-top: 1px solid var(--line); }
-
-.resume-layout {
-  display: grid;
-  grid-template-columns: 240px 1fr;
-  gap: 5rem;
-}
-
+#resume { border-top: 1px solid var(--line); }
+.resume-layout { display: grid; grid-template-columns: 240px 1fr; gap: 5rem; }
 .sidebar-block { margin-bottom: 3rem; }
-
-.sidebar-head {
-  font-size: 0.58rem;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
-  color: var(--orange);
-  padding-bottom: 0.6rem;
-  border-bottom: 1px solid var(--line);
-  margin-bottom: 1.2rem;
-}
-
-.skill-item {
-  display: flex; align-items: center; gap: 0.7rem;
-  font-size: 0.7rem; color: var(--muted);
-  padding: 0.45rem 0;
-  border-bottom: 1px solid rgba(255,255,255,0.03);
-  transition: color 0.2s;
-}
-.skill-item::before {
-  content: '';
-  width: 4px; height: 4px;
-  border-radius: 50%;
-  background: var(--orange);
-  opacity: 0.5;
-  flex-shrink: 0;
-  transition: opacity 0.2s;
-}
+.sidebar-head { font-size: 0.58rem; letter-spacing: 0.32em; text-transform: uppercase; color: var(--orange); padding-bottom: 0.6rem; border-bottom: 1px solid var(--line); margin-bottom: 1.2rem; }
+.skill-item { display: flex; align-items: center; gap: 0.7rem; font-size: 0.7rem; color: var(--muted); padding: 0.45rem 0; border-bottom: 1px solid rgba(255,255,255,0.03); transition: color 0.2s; }
+.skill-item::before { content: ''; width: 4px; height: 4px; border-radius: 50%; background: var(--orange); opacity: 0.5; flex-shrink: 0; transition: opacity 0.2s; }
 .skill-item:hover { color: var(--text); }
 .skill-item:hover::before { opacity: 1; }
-
 .edu-block { font-size: 0.72rem; line-height: 1.9; color: var(--muted); }
 .edu-block strong { color: var(--text); display: block; font-weight: 500; }
 .edu-block .edu-year { color: var(--orange); font-size: 0.65rem; }
-
-.cert-grid {
-  display: flex; flex-wrap: wrap; gap: 0.4rem;
-}
-.cert {
-  font-size: 0.52rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 0.3rem 0.55rem;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid var(--line);
-  color: var(--muted);
-}
-
-.exp-list { display: flex; flex-direction: column; gap: 0; }
-
-.exp-entry {
-  padding: 2.5rem 0;
-  border-bottom: 1px solid var(--line);
-  position: relative;
-}
+.cert-grid { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.cert { font-size: 0.52rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.3rem 0.55rem; background: rgba(255,255,255,0.03); border: 1px solid var(--line); color: var(--muted); }
+.exp-list { display: flex; flex-direction: column; }
+.exp-entry { padding: 2.5rem 0; border-bottom: 1px solid var(--line); }
 .exp-entry:first-child { padding-top: 0; }
-
-.exp-title {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--cream);
-  margin-bottom: 0.3rem;
-}
-
-.exp-meta {
-  font-size: 0.62rem;
-  letter-spacing: 0.12em;
-  color: var(--orange);
-  margin-bottom: 1.2rem;
-  display: flex; gap: 1rem; flex-wrap: wrap;
-}
+.exp-title { font-family: 'Barlow Condensed', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--cream); margin-bottom: 0.3rem; }
+.exp-meta { font-size: 0.62rem; letter-spacing: 0.12em; color: var(--orange); margin-bottom: 1.2rem; display: flex; gap: 1rem; flex-wrap: wrap; }
 .exp-meta span { color: var(--muted); }
-
 .exp-points { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
-.exp-points li {
-  font-size: 0.72rem;
-  line-height: 1.85;
-  color: var(--muted);
-  padding-left: 1.4rem;
-  position: relative;
-}
-.exp-points li::before {
-  content: '›';
-  position: absolute; left: 0;
-  color: var(--green);
-  font-size: 1rem;
-  line-height: 1.5;
-}
+.exp-points li { font-size: 0.72rem; line-height: 1.85; color: var(--muted); padding-left: 1.4rem; position: relative; }
+.exp-points li::before { content: '›'; position: absolute; left: 0; color: var(--green); font-size: 1rem; line-height: 1.5; }
 
 /* ── CONTACT ── */
-#contact {
-  border-top: 1px solid var(--line);
-  padding: 8rem 5vw 5rem;
-}
-
-.contact-header {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(48px, 10vw, 120px);
-  color: var(--cream);
-  line-height: 0.9;
-  margin-bottom: 4rem;
-}
+#contact { border-top: 1px solid var(--line); }
+.contact-header { font-family: 'Bebas Neue', sans-serif; font-size: clamp(48px, 10vw, 120px); color: var(--cream); line-height: 0.9; margin-bottom: 3rem; }
 .contact-header em { color: var(--orange); font-style: normal; }
-
-.contact-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  flex-wrap: wrap;
-  gap: 3rem;
+.contact-form { display: flex; flex-direction: column; gap: 1rem; max-width: 560px; width: 100%; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-field { display: flex; flex-direction: column; gap: 0.4rem; }
+.form-field label { font-size: 0.55rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--muted); }
+.form-field input, .form-field textarea, .form-field select {
+  background: var(--bg3); border: 1px solid var(--line); border-bottom-color: #2e2e26;
+  color: var(--text); font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem;
+  padding: 0.85rem 1rem; outline: none; transition: border-color 0.2s, background 0.2s;
+  -webkit-appearance: none; border-radius: 0;
 }
-
-.contact-cta {
-  font-size: 0.78rem;
-  line-height: 2;
-  color: var(--muted);
-  max-width: 380px;
+.form-field input:focus, .form-field textarea:focus, .form-field select:focus { border-color: var(--orange); background: #161611; }
+.form-field textarea { resize: vertical; min-height: 120px; line-height: 1.8; }
+.form-field select option { background: var(--bg2); }
+.form-submit { display: flex; align-items: center; gap: 1.5rem; margin-top: 0.5rem; flex-wrap: wrap; }
+.btn-submit {
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; letter-spacing: 0.25em;
+  text-transform: uppercase; color: var(--bg); background: var(--orange); border: none;
+  padding: 0.9rem 2rem; cursor: pointer; transition: background 0.2s, transform 0.15s;
 }
-
-.contact-links {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  align-items: flex-end;
-}
-.contact-link {
-  font-size: 0.72rem;
-  letter-spacing: 0.15em;
-  color: var(--muted);
-  text-decoration: none;
-  display: flex; align-items: center; gap: 0.8rem;
-  transition: color 0.2s;
-}
-.contact-link:hover { color: var(--text); }
-.contact-link::after {
-  content: '→';
-  color: var(--orange);
-  opacity: 0;
-  transform: translateX(-6px);
-  transition: opacity 0.2s, transform 0.2s;
-  display: inline-block;
-}
-.contact-link:hover::after { opacity: 1; transform: translateX(0); }
-
+.btn-submit:hover { background: var(--amber); transform: translateY(-1px); }
+.btn-submit:active { transform: translateY(0); }
+.form-note { font-size: 0.58rem; color: var(--muted); line-height: 1.7; }
+.form-success { display: none; font-size: 0.72rem; color: var(--green); letter-spacing: 0.1em; padding: 1rem 0; }
 .footer-bar {
-  margin-top: 6rem;
-  padding-top: 2rem;
-  border-top: 1px solid var(--line);
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.52rem;
-  letter-spacing: 0.25em;
-  color: #2e2e26;
-  text-transform: uppercase;
+  margin-top: 6rem; padding-top: 2rem; border-top: 1px solid var(--line);
+  display: flex; justify-content: space-between;
+  font-size: 0.52rem; letter-spacing: 0.25em; color: #2e2e26; text-transform: uppercase;
 }
-
-/* ── COMING SOON OVERLAY ── */
-.zone-coming {
-  position: absolute;
-  top: 1.2rem; right: 1.2rem;
-  font-size: 0.48rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--muted);
-  border: 1px solid var(--line);
-  padding: 0.25rem 0.5rem;
-}
-
-/* ── REVEAL ANIMATIONS ── */
-.reveal {
-  opacity: 0;
-  transform: translateY(28px);
-  transition: opacity 0.75s ease, transform 0.75s ease;
-}
-.reveal.in { opacity: 1; transform: none; }
 
 /* ── ANIMATIONS ── */
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
+@keyframes slideUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn  { from{opacity:0} to{opacity:1} }
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.75s ease, transform 0.75s ease; }
+.reveal.in { opacity: 1; transform: none; }
 
 /* ── RESPONSIVE ── */
+@media (max-width: 1100px) { .cad-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 900px) {
   .zones-grid { grid-template-columns: 1fr; }
   .about-grid { grid-template-columns: 1fr; gap: 4rem; }
+  .video-grid { grid-template-columns: 1fr; }
+  .cad-grid { grid-template-columns: 1fr; }
+  .projects-grid { grid-template-columns: 1fr; }
   .resume-layout { grid-template-columns: 1fr; gap: 3rem; }
-  .contact-row { flex-direction: column; align-items: flex-start; }
-  .contact-links { align-items: flex-start; }
 }
 @media (max-width: 600px) {
   .section-wrap { padding: 5rem 6vw; }
   .nav-links { display: none; }
-  .hero-scroll { display: none; }
-  .hero-corner { display: none; }
+  .hero-scroll, .hero-corner { display: none; }
+  .form-row { grid-template-columns: 1fr; }
 }
 </style>
 </head>
 <body>
 
-<!-- Custom Cursor -->
 <div id="cursor">
-  <svg viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="11" cy="11" r="4.5" stroke="#c96018" stroke-width="1"/>
-    <line x1="11" y1="0" x2="11" y2="5.5" stroke="#c96018" stroke-width="1"/>
-    <line x1="11" y1="16.5" x2="11" y2="22" stroke="#c96018" stroke-width="1"/>
-    <line x1="0" y1="11" x2="5.5" y2="11" stroke="#c96018" stroke-width="1"/>
-    <line x1="16.5" y1="11" x2="22" y2="11" stroke="#c96018" stroke-width="1"/>
-  </svg>
+  <svg viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="4.5" stroke="#c96018" stroke-width="1"/><line x1="11" y1="0" x2="11" y2="5.5" stroke="#c96018" stroke-width="1"/><line x1="11" y1="16.5" x2="11" y2="22" stroke="#c96018" stroke-width="1"/><line x1="0" y1="11" x2="5.5" y2="11" stroke="#c96018" stroke-width="1"/><line x1="16.5" y1="11" x2="22" y2="11" stroke="#c96018" stroke-width="1"/></svg>
 </div>
 <div id="cursor-dot"></div>
 
-<!-- Navigation -->
 <nav>
   <a href="#hero" class="nav-logo">BI</a>
   <div class="nav-links">
     <a href="#zones">Domains</a>
-    <a href="#about">About</a>
+    <a href="#video">Video</a>
+    <a href="#cad">CAD</a>
+    <a href="#projects">Projects</a>
     <a href="#resume">Resume</a>
     <a href="#contact">Contact</a>
   </div>
@@ -634,17 +363,14 @@ nav {
 <section id="hero">
   <div class="hero-topo"></div>
   <div class="hero-corner">SLO · CA · 805<br>Media · Outdoors · Build</div>
-
   <div class="hero-eyebrow">Portfolio — 2025</div>
-
   <div class="hero-name">
     <span class="line1">Basile</span>
     <span class="line2">Inman</span>
   </div>
-
   <div class="hero-bottom">
     <div class="hero-role">
-      <span style="color:var(--line-color);">—</span>
+      <span>—</span>
       <span id="role-word" class="hero-role-current">Ranger</span>
       <span style="font-size:0.6rem;letter-spacing:0.2em;color:var(--muted);">San Luis Obispo, CA</span>
     </div>
@@ -661,92 +387,40 @@ nav {
     <p class="section-label reveal">01 — Domains</p>
     <h2 class="section-title reveal">What I Do</h2>
   </div>
-
   <div class="zones-grid">
-
-    <!-- Outdoors -->
     <div class="zone z-outdoors" data-num="01">
       <div class="zone-accent-bar"></div>
-      <svg class="zone-glyph" viewBox="0 0 40 40" fill="none">
-        <polygon points="20,4 36,34 4,34" stroke="#3e6e4a" stroke-width="1.5" fill="none"/>
-        <line x1="4" y1="34" x2="36" y2="34" stroke="#3e6e4a" stroke-width="1.5"/>
-        <line x1="20" y1="4" x2="20" y2="34" stroke="#3e6e4a" stroke-width="0.8" stroke-dasharray="2,3"/>
-      </svg>
+      <svg class="zone-glyph" viewBox="0 0 40 40" fill="none"><polygon points="20,4 36,34 4,34" stroke="#3e6e4a" stroke-width="1.5" fill="none"/><line x1="4" y1="34" x2="36" y2="34" stroke="#3e6e4a" stroke-width="1.5"/><line x1="20" y1="4" x2="20" y2="34" stroke="#3e6e4a" stroke-width="0.8" stroke-dasharray="2,3"/></svg>
       <p class="zone-cat">Outdoors & Operations</p>
       <h3 class="zone-name">Ranger &<br>Land Steward</h3>
       <p class="zone-desc">Trail construction and design, fire operations, GIS mapping, vegetation management, public safety, and environmental education across SLO open spaces. Currently serving as Ranger Foreman with the City of San Luis Obispo.</p>
-      <div class="zone-pills">
-        <span class="zone-pill">Trail Build</span>
-        <span class="zone-pill">Fire Ops</span>
-        <span class="zone-pill">GIS</span>
-        <span class="zone-pill">Equipment</span>
-        <span class="zone-pill">Leadership</span>
-        <span class="zone-pill">WUI</span>
-      </div>
+      <div class="zone-pills"><span class="zone-pill">Trail Build</span><span class="zone-pill">Fire Ops</span><span class="zone-pill">GIS</span><span class="zone-pill">Equipment</span><span class="zone-pill">Leadership</span><span class="zone-pill">WUI</span></div>
     </div>
-
-    <!-- Creative -->
     <div class="zone z-creative" data-num="02">
       <div class="zone-accent-bar"></div>
-      <svg class="zone-glyph" viewBox="0 0 40 40" fill="none">
-        <rect x="4" y="4" width="32" height="32" stroke="#d4881a" stroke-width="1.5" fill="none"/>
-        <line x1="4" y1="20" x2="36" y2="20" stroke="#d4881a" stroke-width="0.8"/>
-        <line x1="20" y1="4" x2="20" y2="36" stroke="#d4881a" stroke-width="0.8"/>
-        <circle cx="20" cy="20" r="5" stroke="#d4881a" stroke-width="1"/>
-      </svg>
+      <svg class="zone-glyph" viewBox="0 0 40 40" fill="none"><rect x="4" y="4" width="32" height="32" stroke="#d4881a" stroke-width="1.5" fill="none"/><line x1="4" y1="20" x2="36" y2="20" stroke="#d4881a" stroke-width="0.8"/><line x1="20" y1="4" x2="20" y2="36" stroke="#d4881a" stroke-width="0.8"/><circle cx="20" cy="20" r="5" stroke="#d4881a" stroke-width="1"/></svg>
       <p class="zone-cat">Visual & Digital</p>
       <h3 class="zone-name">Graphic Design<br>& Media</h3>
       <p class="zone-desc">Video production, graphic design, web design, and educational media. Designed ranger kiosks, created public signage systems, produced video series, and managed digital outreach for the City. Adobe Suite expert.</p>
-      <div class="zone-pills">
-        <span class="zone-pill">Adobe Suite</span>
-        <span class="zone-pill">Video Prod.</span>
-        <span class="zone-pill">Web Design</span>
-        <span class="zone-pill">Signage</span>
-        <span class="zone-pill">Branding</span>
-      </div>
+      <div class="zone-pills"><span class="zone-pill">Adobe Suite</span><span class="zone-pill">Video Prod.</span><span class="zone-pill">Web Design</span><span class="zone-pill">Signage</span><span class="zone-pill">Branding</span></div>
     </div>
-
-    <!-- Music -->
     <div class="zone z-music" data-num="03">
       <div class="zone-accent-bar"></div>
       <div class="zone-coming">Coming Soon</div>
-      <svg class="zone-glyph" viewBox="0 0 40 40" fill="none">
-        <circle cx="20" cy="20" r="16" stroke="#6a4a8c" stroke-width="1.5" fill="none"/>
-        <circle cx="20" cy="20" r="8" stroke="#6a4a8c" stroke-width="1" fill="none"/>
-        <circle cx="20" cy="20" r="2" fill="#6a4a8c"/>
-      </svg>
+      <svg class="zone-glyph" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="16" stroke="#6a4a8c" stroke-width="1.5" fill="none"/><circle cx="20" cy="20" r="8" stroke="#6a4a8c" stroke-width="1" fill="none"/><circle cx="20" cy="20" r="2" fill="#6a4a8c"/></svg>
       <p class="zone-cat">Audio & Performance</p>
       <h3 class="zone-name">Music Producer<br>& DJ</h3>
       <p class="zone-desc">Music production and DJing. This section is coming — will feature mixes, original productions, and upcoming live sets. Mountain biking rhythm translates well to beats.</p>
-      <div class="zone-pills">
-        <span class="zone-pill">Production</span>
-        <span class="zone-pill">DJing</span>
-        <span class="zone-pill">Live Sets</span>
-        <span class="zone-pill">Audio</span>
-      </div>
+      <div class="zone-pills"><span class="zone-pill">Production</span><span class="zone-pill">DJing</span><span class="zone-pill">Live Sets</span><span class="zone-pill">Audio</span></div>
     </div>
-
-    <!-- Craft -->
     <div class="zone z-craft" data-num="04">
       <div class="zone-accent-bar"></div>
-      <svg class="zone-glyph" viewBox="0 0 40 40" fill="none">
-        <rect x="6" y="18" width="28" height="4" stroke="#787e84" stroke-width="1.2" fill="none"/>
-        <rect x="14" y="8" width="12" height="10" stroke="#787e84" stroke-width="1.2" fill="none"/>
-        <line x1="20" y1="22" x2="20" y2="34" stroke="#787e84" stroke-width="1.2"/>
-        <line x1="14" y1="34" x2="26" y2="34" stroke="#787e84" stroke-width="1.2"/>
-      </svg>
+      <svg class="zone-glyph" viewBox="0 0 40 40" fill="none"><rect x="6" y="18" width="28" height="4" stroke="#787e84" stroke-width="1.2" fill="none"/><rect x="14" y="8" width="12" height="10" stroke="#787e84" stroke-width="1.2" fill="none"/><line x1="20" y1="22" x2="20" y2="34" stroke="#787e84" stroke-width="1.2"/><line x1="14" y1="34" x2="26" y2="34" stroke="#787e84" stroke-width="1.2"/></svg>
       <p class="zone-cat">Fabrication & Build</p>
       <h3 class="zone-name">Wood &<br>Metalwork</h3>
       <p class="zone-desc">Carpentry, metalwork, CAD modeling in Onshape, and hands-on fabrication. Built trail infrastructure including bridges and boardwalks. Heavy equipment operation and mechanical skills round out the toolkit.</p>
-      <div class="zone-pills">
-        <span class="zone-pill">Carpentry</span>
-        <span class="zone-pill">Metalwork</span>
-        <span class="zone-pill">Onshape CAD</span>
-        <span class="zone-pill">Fabrication</span>
-        <span class="zone-pill">Welding</span>
-      </div>
+      <div class="zone-pills"><span class="zone-pill">Carpentry</span><span class="zone-pill">Metalwork</span><span class="zone-pill">Onshape CAD</span><span class="zone-pill">Fabrication</span></div>
     </div>
-
   </div>
 </section>
 
@@ -755,37 +429,137 @@ nav {
   <div class="section-wrap">
     <p class="section-label reveal">02 — Background</p>
     <h2 class="section-title reveal">A Few Facts</h2>
-
     <div class="about-grid">
       <div>
         <p class="about-body reveal">
           Based in <strong>San Luis Obispo, California</strong> — Basile Inman doesn't fit in a single column. He holds a B.A. in <strong>Media Studies &amp; Computer Science</strong> from the University of San Francisco, and has spent the better part of a decade building trails, managing fire crews, and earning <em>City Employee of the Year</em> as a Ranger Foreman for the City of SLO.<br><br>
-          When he's not managing open spaces or running a chainsaw, he's designing visuals, building something in the shop, producing music, or shredding trails on a mountain bike. The thread running through all of it: <strong>making things with intention</strong>, whether that's a trail through steep terrain, a clear infographic, or a well-timed drop.
+          When he's not managing open spaces or running a chainsaw, he's designing visuals, building something in the shop, producing music, or shredding trails on a mountain bike. The thread running through all of it: <strong>making things with intention</strong>.
         </p>
         <div class="awards-row reveal">
           <div class="award">City Employee of the Year 2024 — Leadership &amp; Support, Innovation &amp; Flexibility</div>
           <div class="award">City Creative Ingenuity Award — Recognized for media and design contributions</div>
         </div>
       </div>
-
       <div class="about-stats reveal">
-        <div class="stat">
-          <div class="stat-val">7+</div>
-          <div class="stat-lbl">Years as City Ranger</div>
+        <div class="stat"><div class="stat-val">7+</div><div class="stat-lbl">Years as City Ranger</div></div>
+        <div class="stat"><div class="stat-val">12+</div><div class="stat-lbl">Active Certifications</div></div>
+        <div class="stat"><div class="stat-val">2024</div><div class="stat-lbl">Employee of the Year</div></div>
+        <div class="stat"><div class="stat-val">USF</div><div class="stat-lbl">B.A. Media Studies / CS · '17</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ VIDEO ══ -->
+<section id="video">
+  <div class="section-wrap">
+    <p class="section-label reveal">03 — Video</p>
+    <h2 class="section-title reveal">Produced Work</h2>
+
+    <!-- Featured: Vimeo -->
+    <div class="reveal">
+      <div class="video-featured">
+        <iframe src="https://player.vimeo.com/video/881477484?color=c96018&title=0&byline=0&portrait=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+      </div>
+      <div class="video-label"><strong>Featured</strong>Vimeo · 2023</div>
+    </div>
+
+    <!-- YouTube pair -->
+    <div class="video-grid" style="margin-top:2.5rem;">
+      <div class="video-item reveal">
+        <div class="video-embed-wrap">
+          <iframe src="https://www.youtube.com/embed/uj3s_Yj5QKE?rel=0&modestbranding=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
-        <div class="stat">
-          <div class="stat-val">12+</div>
-          <div class="stat-lbl">Active Certifications</div>
+        <div class="video-label"><strong>YouTube</strong>YouTube · Video 1</div>
+      </div>
+      <div class="video-item reveal">
+        <div class="video-embed-wrap">
+          <iframe src="https://www.youtube.com/embed/AWx6-laoyKg?rel=0&modestbranding=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
-        <div class="stat">
-          <div class="stat-val">2024</div>
-          <div class="stat-lbl">Employee of the Year</div>
+        <div class="video-label"><strong>YouTube</strong>YouTube · Video 2</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CAD ══ -->
+<section id="cad">
+  <div class="section-wrap">
+    <p class="section-label reveal">04 — 3D Models</p>
+    <h2 class="section-title reveal">CAD Work</h2>
+
+    <div class="cad-note reveal">
+      To enable interactive 3D viewing: in Onshape, open each document → Share → make Public. Once public, the models will load as live interactive viewers below. <a href="https://cad.onshape.com" target="_blank">cad.onshape.com →</a>
+    </div>
+
+    <div class="cad-grid">
+
+      <div class="cad-card reveal">
+        <div class="cad-frame-wrap">
+          <iframe src="https://cad.onshape.com/documents/4bdf9ef6f3104fd64fb93d5a/w/958a8d63aec8089010890d4a/e/260f4e50d05b396944f99df3" allowfullscreen></iframe>
         </div>
-        <div class="stat">
-          <div class="stat-val">USF</div>
-          <div class="stat-lbl">B.A. Media Studies / CS · '17</div>
+        <div class="cad-info">
+          <div class="cad-name">Trail Bridge</div>
+          <div class="cad-meta">Onshape CAD · Structural · Wood & Metal</div>
+          <a href="https://cad.onshape.com/documents/4bdf9ef6f3104fd64fb93d5a/w/958a8d63aec8089010890d4a/e/260f4e50d05b396944f99df3" target="_blank" class="cad-link">Open in Onshape →</a>
         </div>
       </div>
+
+      <div class="cad-card reveal">
+        <div class="cad-frame-wrap">
+          <iframe src="https://cad.onshape.com/documents/278f8c71ab8b0e9f9e6a7b77/w/7503e107472b54b815a59911/e/d89430b76a9dbe53c30e2016" allowfullscreen></iframe>
+        </div>
+        <div class="cad-info">
+          <div class="cad-name">Trailhead Kiosk</div>
+          <div class="cad-meta">Onshape CAD · Infrastructure · Signage</div>
+          <a href="https://cad.onshape.com/documents/278f8c71ab8b0e9f9e6a7b77/w/7503e107472b54b815a59911/e/d89430b76a9dbe53c30e2016" target="_blank" class="cad-link">Open in Onshape →</a>
+        </div>
+      </div>
+
+      <div class="cad-card reveal">
+        <div class="cad-frame-wrap">
+          <iframe src="https://cad.onshape.com/documents/24363476ea6bfb8d1e544c02/w/1776dc632fae722eddf2b2d0/e/1bb03d5f1e918d816787cc2f" allowfullscreen></iframe>
+        </div>
+        <div class="cad-info">
+          <div class="cad-name">Metal Cattle Guard</div>
+          <div class="cad-meta">Onshape CAD · Metalwork · Field Install</div>
+          <a href="https://cad.onshape.com/documents/24363476ea6bfb8d1e544c02/w/1776dc632fae722eddf2b2d0/e/1bb03d5f1e918d816787cc2f" target="_blank" class="cad-link">Open in Onshape →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ PROJECTS ══ -->
+<section id="projects">
+  <div class="section-wrap">
+    <p class="section-label reveal">05 — Projects</p>
+    <h2 class="section-title reveal">Built Things</h2>
+
+    <div class="projects-grid">
+
+      <!-- blackvault.uk -->
+      <a href="https://blackvault.uk/" target="_blank" class="project-card reveal">
+        <div class="project-preview">
+          <iframe src="https://blackvault.uk/" scrolling="no" tabindex="-1"></iframe>
+          <div class="preview-overlay"></div>
+        </div>
+        <div class="project-body">
+          <div class="project-tag">Web Design & Dev</div>
+          <div class="project-name">Black Vault</div>
+          <div class="project-desc">A surveillance-aesthetic web interface built from scratch. Terminal-style query UI, ambient audio, reactive type, and a counter-surveillance resource directory. Fully custom HTML/CSS/JS.</div>
+          <div class="project-arrow">Visit Site →</div>
+        </div>
+      </a>
+
+      <!-- Placeholder for next project -->
+      <div class="project-placeholder reveal">
+        <div class="ph-icon">＋</div>
+        <div class="ph-label">More Coming</div>
+        <div class="ph-sub">Drop links to other projects — Google Photos albums, SoundCloud tracks, or anything else worth featuring here.</div>
+      </div>
+
     </div>
   </div>
 </section>
@@ -793,12 +567,9 @@ nav {
 <!-- ══ RESUME ══ -->
 <section id="resume">
   <div class="section-wrap">
-    <p class="section-label reveal">03 — Experience</p>
+    <p class="section-label reveal">06 — Experience</p>
     <h2 class="section-title reveal">The Work</h2>
-
     <div class="resume-layout">
-
-      <!-- Sidebar -->
       <div>
         <div class="sidebar-block reveal">
           <div class="sidebar-head">Skills</div>
@@ -813,7 +584,6 @@ nav {
           <div class="skill-item">Web Design</div>
           <div class="skill-item">CDL Class A License</div>
         </div>
-
         <div class="sidebar-block reveal">
           <div class="sidebar-head">Education</div>
           <div class="edu-block">
@@ -822,166 +592,164 @@ nav {
             <span class="edu-year">Aug 2013 – May 2017</span>
           </div>
         </div>
-
         <div class="sidebar-block reveal">
           <div class="sidebar-head">Certifications</div>
           <div class="cert-grid">
-            <span class="cert">PC 832</span>
-            <span class="cert">CDL Class A</span>
-            <span class="cert">FF Type II</span>
-            <span class="cert">First Aid/CPR</span>
-            <span class="cert">Wilderness FA</span>
-            <span class="cert">FAA UAS</span>
-            <span class="cert">CLETS</span>
-            <span class="cert">C Sawyer</span>
-            <span class="cert">A Sawyer</span>
-            <span class="cert">S-290</span>
-            <span class="cert">CA-219</span>
-            <span class="cert">SEMS G606</span>
+            <span class="cert">PC 832</span><span class="cert">CDL Class A</span><span class="cert">FF Type II</span>
+            <span class="cert">First Aid</span><span class="cert">Wilderness FA</span><span class="cert">FAA UAS</span>
+            <span class="cert">CLETS</span><span class="cert">C Sawyer</span><span class="cert">A Sawyer</span>
+            <span class="cert">S-290</span><span class="cert">CA-219</span><span class="cert">SEMS G606</span>
           </div>
         </div>
       </div>
-
-      <!-- Experience -->
       <div class="exp-list reveal">
         <div class="exp-entry">
           <div class="exp-title">Ranger Service Worker — Foreman Level</div>
-          <div class="exp-meta">
-            City of San Luis Obispo
-            <span>Nov 2018 – Present</span>
-            <span>SLO, CA</span>
-          </div>
+          <div class="exp-meta">City of San Luis Obispo <span>Nov 2018 – Present</span><span>SLO, CA</span></div>
           <ul class="exp-points">
-            <li>Planned, organized, and led trail construction, parking lot enhancements, bridge builds, and infrastructure upgrades across City open spaces</li>
-            <li>Developed and managed the City's fuel reduction team; trained and supervised supplemental staff in WUI vegetation management along City corridors</li>
-            <li>Created live-update public trail closure map and fuel reduction data tracker using GIS; developed multiple map resources for public and operations use</li>
-            <li>Produced a ranger video series, led Farmers Market outreach, conducted guided hikes, and appeared in media interviews for trail closure education</li>
-            <li>Designed and installed educational signage systems; redesigned public kiosks; managed the ranger website and digital presence</li>
-            <li>Issued citations, conducted patrol, and supported transient camp cleanups while ensuring public safety compliance</li>
-            <li>Led Fire Academy crews, trained incoming rangers, and developed training documentation; served on City Communications Committee</li>
-            <li>Operated and maintained chainsaws, dozers, tracked machinery, and other heavy equipment; implemented theft prevention protocols</li>
+            <li>Planned, organized, and led trail construction, bridge builds, parking lot enhancements, and infrastructure upgrades across City open spaces</li>
+            <li>Developed and managed the City's fuel reduction team; trained and supervised supplemental staff in WUI vegetation management</li>
+            <li>Created live-update public trail closure map and fuel reduction data tracker using GIS</li>
+            <li>Produced a ranger video series, led Farmers Market outreach, and appeared in media interviews for trail closure education</li>
+            <li>Designed and installed educational signage systems; redesigned public kiosks; managed the ranger website</li>
+            <li>Issued citations, conducted patrol, and supported transient camp cleanups</li>
+            <li>Led Fire Academy crews, trained incoming rangers, developed training documentation</li>
             <li>Recognized as City Employee of the Year 2024 and received the Creative Ingenuity Award</li>
           </ul>
         </div>
-
         <div class="exp-entry">
           <div class="exp-title">Trail Designer & Consultant</div>
-          <div class="exp-meta">
-            Natural Surface Trails
-            <span>May 2023 – 2024</span>
-            <span>SLO, CA</span>
-          </div>
+          <div class="exp-meta">Natural Surface Trails <span>May 2023 – 2024</span><span>SLO, CA</span></div>
           <ul class="exp-points">
             <li>Trail design consultation for natural surface trail projects across the Central Coast region</li>
-            <li>Applied technical trail construction expertise to small, medium, and large project scopes</li>
           </ul>
         </div>
-
         <div class="exp-entry">
           <div class="exp-title">IT Technician</div>
-          <div class="exp-meta">
-            San Luis Ambulance
-            <span>May 2017 – 2019</span>
-            <span>SLO, CA</span>
-          </div>
+          <div class="exp-meta">San Luis Ambulance <span>May 2017 – 2019</span><span>SLO, CA</span></div>
           <ul class="exp-points">
             <li>Managed IT systems and technical infrastructure for ambulance services operations</li>
-            <li>First role following graduation — applied CS degree to real-world systems support</li>
           </ul>
         </div>
       </div>
-
     </div>
   </div>
 </section>
 
 <!-- ══ CONTACT ══ -->
 <section id="contact">
-  <div class="contact-header reveal">
-    Get<br><em>In Touch</em>
-  </div>
-
-  <div class="contact-row">
-    <p class="contact-cta reveal">
-      Whether it's a trail project, design collaboration, music, something built from scratch, or just a conversation — reach out.
-    </p>
-    <div class="contact-links reveal">
-      <a href="mailto:basileslo@gmail.com" class="contact-link">basileslo@gmail.com</a>
-      <a href="tel:8057044116" class="contact-link">(805) 704-4116</a>
-      <span class="contact-link" style="pointer-events:none;opacity:0.4;">San Luis Obispo, CA</span>
+  <div class="section-wrap">
+    <div class="contact-header reveal">
+      Get<br><em>In Touch</em>
     </div>
-  </div>
-
-  <div class="footer-bar">
-    <span>Basile Inman</span>
-    <span>SLO · CA</span>
-    <span>© 2025</span>
+    <div class="reveal">
+      <!--
+        Activate form: go to formspree.io → New Form → copy your ID
+        Replace YOUR_FORM_ID below (e.g. xpwzgkla)
+      -->
+      <form class="contact-form" id="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+        <div class="form-row">
+          <div class="form-field"><label for="name">Name</label><input type="text" id="name" name="name" placeholder="Your name" required></div>
+          <div class="form-field"><label for="email">Email</label><input type="email" id="email" name="email" placeholder="your@email.com" required></div>
+        </div>
+        <div class="form-field">
+          <label for="subject">What's this about?</label>
+          <select id="subject" name="subject">
+            <option value="">— Select a topic</option>
+            <option value="trails">Trail / Outdoors Project</option>
+            <option value="design">Design & Media Work</option>
+            <option value="music">Music / DJ Inquiry</option>
+            <option value="craft">Craft / Build Project</option>
+            <option value="other">Something Else</option>
+          </select>
+        </div>
+        <div class="form-field"><label for="message">Message</label><textarea id="message" name="message" placeholder="Tell me what you're working on..." required></textarea></div>
+        <div class="form-submit">
+          <button type="submit" class="btn-submit">Send Message →</button>
+          <span class="form-note">No spam, no subscriptions.<br>Just a direct line.</span>
+        </div>
+        <div class="form-success" id="form-success">✓ Message sent — I'll be in touch.</div>
+      </form>
+    </div>
+    <div class="footer-bar">
+      <span>Basile Inman</span>
+      <span>SLO · CA</span>
+      <span>© 2025</span>
+    </div>
   </div>
 </section>
 
 <script>
-// ── Cursor ──
-const cursor    = document.getElementById('cursor');
-const cursorDot = document.getElementById('cursor-dot');
-let mx = -100, my = -100;
-
-document.addEventListener('mousemove', e => {
-  mx = e.clientX; my = e.clientY;
-  cursorDot.style.left = mx + 'px';
-  cursorDot.style.top  = my + 'px';
-});
-
-// Smooth cursor follow
-(function animateCursor() {
-  const cx = parseFloat(cursor.style.left || mx);
-  const cy = parseFloat(cursor.style.top  || my);
-  const nx = cx + (mx - cx) * 0.18;
-  const ny = cy + (my - cy) * 0.18;
-  cursor.style.left = nx + 'px';
-  cursor.style.top  = ny + 'px';
-  requestAnimationFrame(animateCursor);
-})();
-
-document.addEventListener('mouseleave', () => { cursor.style.opacity = '0'; });
-document.addEventListener('mouseenter', () => { cursor.style.opacity = '1'; });
+// ── Cursor (desktop only) ──
+const cursor = document.getElementById('cursor');
+const dot    = document.getElementById('cursor-dot');
+if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+  let mx = -100, my = -100;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+  });
+  (function anim() {
+    const cx = parseFloat(cursor.style.left || mx);
+    const cy = parseFloat(cursor.style.top  || my);
+    cursor.style.left = (cx + (mx - cx) * 0.18) + 'px';
+    cursor.style.top  = (cy + (my - cy) * 0.18) + 'px';
+    requestAnimationFrame(anim);
+  })();
+  document.addEventListener('mouseleave', () => cursor.style.opacity = '0');
+  document.addEventListener('mouseenter', () => cursor.style.opacity = '1');
+}
 
 // ── Role rotation ──
 const roles = ['Ranger','Designer','Builder','Producer','Trailmaker','DJ','Foreman','Creator'];
 let ri = 0;
 const roleEl = document.getElementById('role-word');
 roleEl.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-
 setInterval(() => {
-  roleEl.style.opacity = '0';
-  roleEl.style.transform = 'translateY(6px)';
+  roleEl.style.opacity = '0'; roleEl.style.transform = 'translateY(6px)';
   setTimeout(() => {
     ri = (ri + 1) % roles.length;
     roleEl.textContent = roles[ri];
-    roleEl.style.opacity = '1';
-    roleEl.style.transform = 'translateY(0)';
+    roleEl.style.opacity = '1'; roleEl.style.transform = 'translateY(0)';
   }, 320);
 }, 2400);
 
 // ── Scroll reveals ──
-const revealEls = document.querySelectorAll('.reveal');
-const revealObs = new IntersectionObserver((entries) => {
-  entries.forEach((entry, i) => {
-    if (entry.isIntersecting) {
-      const delay = Array.from(revealEls).indexOf(entry.target) % 4 * 80;
-      setTimeout(() => entry.target.classList.add('in'), delay);
-      revealObs.unobserve(entry.target);
+const revEls = document.querySelectorAll('.reveal');
+const revObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const i = Array.from(revEls).indexOf(e.target) % 4;
+      setTimeout(() => e.target.classList.add('in'), i * 80);
+      revObs.unobserve(e.target);
     }
   });
 }, { threshold: 0.08 });
-revealEls.forEach(el => revealObs.observe(el));
+revEls.forEach(el => revObs.observe(el));
 
-// ── Nav background on scroll ──
+// ── Nav scroll ──
 const nav = document.querySelector('nav');
 window.addEventListener('scroll', () => {
   nav.style.background = window.scrollY > 80
     ? 'rgba(12,12,9,0.97)'
     : 'linear-gradient(to bottom, rgba(12,12,9,0.95) 0%, transparent 100%)';
 });
+
+// ── Contact form (Formspree AJAX) ──
+const form = document.getElementById('contact-form');
+const ok   = document.getElementById('form-success');
+if (form) {
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = form.querySelector('.btn-submit');
+    btn.textContent = 'Sending…'; btn.disabled = true;
+    try {
+      const res = await fetch(form.action, { method:'POST', body: new FormData(form), headers:{'Accept':'application/json'} });
+      if (res.ok) { form.style.display = 'none'; ok.style.display = 'block'; }
+      else { btn.textContent = 'Error — try again'; btn.disabled = false; }
+    } catch { btn.textContent = 'Error — try again'; btn.disabled = false; }
+  });
+}
 </script>
 </body>
 </html>
