@@ -894,7 +894,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.m
 import { STLLoader }      from 'https://cdn.jsdelivr.net/npm/three@0.157.0/examples/jsm/loaders/STLLoader.js';
 import { OrbitControls }  from 'https://cdn.jsdelivr.net/npm/three@0.157.0/examples/jsm/controls/OrbitControls.js';
 
-function initSTLViewer({ containerId, canvasId, loadingId, hintId, stlPath }) {
+function initSTLViewer({ containerId, canvasId, loadingId, hintId, stlPath, azimuth = 45, elevation = 35 }) {
   const container = document.getElementById(containerId);
   const canvas    = document.getElementById(canvasId);
   const loading   = document.getElementById(loadingId);
@@ -967,9 +967,15 @@ function initSTLViewer({ containerId, canvasId, loadingId, hintId, stlPath }) {
       camera.top  =  F;         camera.bottom = -F;
       camera.updateProjectionMatrix();
 
-      // Classic isometric angle
-      const d = maxD * 1.1;
-      camera.position.set(d, d * 0.72, d);
+      // Position camera using azimuth + elevation angles
+      const az  = azimuth   * Math.PI / 180;
+      const el  = elevation * Math.PI / 180;
+      const d   = maxD * 1.8;
+      camera.position.set(
+        d * Math.cos(el) * Math.sin(az),
+        d * Math.sin(el),
+        d * Math.cos(el) * Math.cos(az)
+      );
       camera.lookAt(0, 0, 0);
       controls.update();
 
