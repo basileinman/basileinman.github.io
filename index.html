@@ -552,6 +552,11 @@ nav {
           </div>
           <div class="stl-hint" id="bridge-hint">Drag to rotate · Scroll to zoom</div>
           <div class="cad-label-overlay">Onshape · STL · Interactive</div>
+          <!-- DEV: remove these controls once you have the angle you want -->
+          <div id="angle-controls" style="position:absolute;top:0.6rem;left:0.6rem;background:rgba(0,0,0,0.75);padding:0.6rem 0.8rem;font-family:monospace;font-size:0.6rem;color:#e2d9c5;z-index:10;line-height:2;border:1px solid #2a2a20;">
+            <div>Az: <input type="range" id="ctrl-az" min="0" max="360" value="225" style="width:80px;vertical-align:middle"> <span id="val-az">225</span>°</div>
+            <div>El: <input type="range" id="ctrl-el" min="-10" max="80" value="30" style="width:80px;vertical-align:middle"> <span id="val-el">30</span>°</div>
+          </div>
         </div>
         <div class="cad-info">
           <div class="cad-name">Trail Bridge</div>
@@ -875,6 +880,22 @@ function initSTLViewer({ containerId, canvasId, loadingId, hintId, stlPath, azim
       camera.position.set(d * Math.cos(el) * Math.sin(az), d * Math.sin(el), d * Math.cos(el) * Math.cos(az));
       camera.lookAt(0, 0, 0);
       controls.update();
+
+      // Wire up live angle sliders if present
+      const ctrlAz = document.getElementById('ctrl-az');
+      const ctrlEl = document.getElementById('ctrl-el');
+      const valAz  = document.getElementById('val-az');
+      const valEl  = document.getElementById('val-el');
+      function applyAngle() {
+        const a = parseFloat(ctrlAz.value) * Math.PI / 180;
+        const e = parseFloat(ctrlEl.value) * Math.PI / 180;
+        camera.position.set(d * Math.cos(e) * Math.sin(a), d * Math.sin(e), d * Math.cos(e) * Math.cos(a));
+        camera.lookAt(0, 0, 0);
+        controls.update();
+        valAz.textContent = ctrlAz.value;
+        valEl.textContent = ctrlEl.value;
+      }
+      if (ctrlAz) { ctrlAz.addEventListener('input', applyAngle); ctrlEl.addEventListener('input', applyAngle); }
       (function loop() { requestAnimationFrame(loop); controls.update(); renderer.render(scene, camera); })();
     })
     .catch(err => {
