@@ -828,7 +828,7 @@ nav {
 
 <script>
 // ── STL Viewer ──
-function initSTLViewer({ containerId, canvasId, loadingId, hintId, stlPath, azimuth = 45, elevation = 35 }) {
+function initSTLViewer({ containerId, canvasId, loadingId, hintId, stlPath, azimuth = 45, elevation = 35, geomRotation = { x: 0, y: 0, z: 0 } }) {
   const container = document.getElementById(containerId);
   const canvas    = document.getElementById(canvasId);
   const loading   = document.getElementById(loadingId);
@@ -870,6 +870,9 @@ function initSTLViewer({ containerId, canvasId, loadingId, hintId, stlPath, azim
       const sz  = new THREE.Vector3(); geo.boundingBox.getSize(sz);
       const maxD = Math.max(sz.x, sz.y, sz.z);
       geo.translate(-ctr.x, -ctr.y, -ctr.z);
+      geo.rotateX(geomRotation.x * Math.PI / 180);
+      geo.rotateY(geomRotation.y * Math.PI / 180);
+      geo.rotateZ(geomRotation.z * Math.PI / 180);
       scene.add(new THREE.Mesh(geo, new THREE.MeshLambertMaterial({ color: 0x96836a })));
       if (loading) loading.style.display = 'none';
 
@@ -913,7 +916,8 @@ requestAnimationFrame(() => {
     containerId: 'bridge-container', canvasId: 'bridge-canvas',
     loadingId: 'bridge-loading', hintId: 'bridge-hint',
     stlPath: 'models/Bridge_Assembly.stl',
-    azimuth: 225, elevation: 30
+    azimuth: 225, elevation: 30,
+    geomRotation: { x: 0, y: -90, z: 0 }
   });
 });
 
