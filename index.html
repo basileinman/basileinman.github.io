@@ -179,12 +179,9 @@ nav {
 
 /* ── DESIGN SECTION ── */
 #design { background: var(--bg2); border-top: 1px solid var(--line); }
-
 .design-intro { font-size: 0.75rem; color: var(--muted); line-height: 1.9; max-width: 520px; margin-bottom: 2.5rem; }
 
-.design-filters {
-  display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2.5rem;
-}
+.design-filters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 3rem; }
 .design-filter {
   font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem;
   letter-spacing: 0.22em; text-transform: uppercase;
@@ -192,82 +189,91 @@ nav {
   background: none; color: var(--muted); cursor: pointer;
   transition: color 0.2s, border-color 0.2s, background 0.2s;
 }
-.design-filter:hover { color: var(--text); border-color: #2e2e26; }
+.design-filter:hover  { color: var(--text); border-color: #2e2e26; }
 .design-filter.active { color: var(--bg); background: var(--orange); border-color: var(--orange); }
 
-.design-strip-outer {
+/* ── FAN ── */
+.fan-stage {
   position: relative;
+  height: 380px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin: 0 0 1.5rem;
 }
-.design-strip-outer::before,
-.design-strip-outer::after {
-  content: ''; position: absolute; top: 0; bottom: 0; width: 60px; z-index: 2; pointer-events: none;
+
+.fan-card {
+  position: absolute;
+  width: 190px; height: 265px;
+  cursor: pointer;
+  transform-origin: bottom center;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+  border: 1px solid rgba(255,255,255,0.09);
+  overflow: hidden;
+  box-shadow: 0 6px 28px rgba(0,0,0,0.55);
+  user-select: none;
 }
-.design-strip-outer::before { left: 0; background: linear-gradient(to right, var(--bg2), transparent); }
-.design-strip-outer::after  { right: 0; background: linear-gradient(to left, var(--bg2), transparent); }
+.fan-card:hover { box-shadow: 0 22px 60px rgba(0,0,0,0.85); }
 
-.design-strip {
-  display: flex; gap: 1rem; overflow-x: auto; padding: 0.5rem 0 1.5rem;
-  scroll-snap-type: x mandatory; scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
+/* Image face */
+.fan-face-img {
+  position: absolute; inset: 0;
+  background-size: cover;
+  background-position: top center;
+  background-color: #0a0a08;
 }
-.design-strip::-webkit-scrollbar { display: none; }
 
-.design-card {
-  flex-shrink: 0; width: 190px; height: 260px;
-  background: var(--bg); border: 1px solid var(--line);
-  display: flex; flex-direction: column; justify-content: space-between;
-  padding: 1.4rem 1.2rem 1.2rem;
-  scroll-snap-align: start; cursor: pointer; position: relative; overflow: hidden;
-  transition: border-color 0.25s, background 0.25s;
+/* CSS fallback face (no thumbnail) */
+.fan-face-css {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  justify-content: space-between;
+  padding: 1.2rem 1rem 3.5rem;
 }
-.design-card:hover { border-color: #2e2e26; background: #111109; }
-.design-card.hidden { display: none; }
-
-.design-card-accent {
-  position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  transition: height 0.25s;
-}
-.design-card:hover .design-card-accent { height: 3px; }
-
-.design-card-num {
-  font-family: 'Bebas Neue', sans-serif; font-size: 4rem;
-  line-height: 1; color: rgba(255,255,255,0.04); position: absolute;
-  bottom: -10px; right: 10px; pointer-events: none;
-  transition: color 0.25s;
-}
-.design-card:hover .design-card-num { color: rgba(255,255,255,0.07); }
-
-.design-card-body { position: relative; z-index: 1; }
-
-.design-card-cat {
+.fan-face-accent { position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+.fan-face-cat {
   font-size: 0.48rem; letter-spacing: 0.25em; text-transform: uppercase;
-  padding: 0.2rem 0.5rem; border: 1px solid currentColor;
-  display: inline-block; margin-bottom: 1rem;
+  display: inline-block; padding: 0.2rem 0.5rem; border: 1px solid currentColor; align-self: flex-start;
 }
-.design-card-title {
-  font-family: 'Barlow Condensed', sans-serif; font-size: 1.15rem;
-  font-weight: 700; color: var(--cream); line-height: 1.2;
+.fan-face-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.35rem; font-weight: 700; color: var(--cream); line-height: 1.15;
 }
-.design-card-sub {
-  font-size: 0.6rem; color: var(--muted); margin-top: 0.4rem; line-height: 1.6;
+.fan-face-num {
+  font-family: 'Bebas Neue', sans-serif; font-size: 6rem;
+  line-height: 1; color: rgba(255,255,255,0.04);
+  position: absolute; bottom: 50px; right: 6px; pointer-events: none;
+}
+.fan-face-year {
+  font-size: 0.58rem; letter-spacing: 0.12em; color: var(--muted);
+  position: absolute; bottom: 3.8rem; left: 1rem;
 }
 
-.design-card-footer {
-  position: relative; z-index: 1;
-  display: flex; justify-content: space-between; align-items: flex-end;
+/* Bottom overlay (both modes) */
+.fan-overlay {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
+  padding: 1.8rem 1rem 0.9rem;
 }
-.design-card-year { font-size: 0.6rem; color: var(--muted); letter-spacing: 0.1em; }
-.design-card-cta {
-  font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase;
-  color: var(--orange); opacity: 0; transform: translateX(-4px);
+.fan-overlay-cat {
+  font-size: 0.46rem; letter-spacing: 0.22em; text-transform: uppercase;
+  display: block; margin-bottom: 0.25rem;
+}
+.fan-overlay-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.95rem; font-weight: 700; color: var(--cream); line-height: 1.2; display: block;
+}
+.fan-overlay-cta {
+  font-size: 0.5rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--orange); display: block; margin-top: 0.35rem;
+  opacity: 0; transform: translateY(4px);
   transition: opacity 0.2s, transform 0.2s;
 }
-.design-card:hover .design-card-cta { opacity: 1; transform: none; }
+.fan-card:hover .fan-overlay-cta { opacity: 1; transform: none; }
 
-.design-scroll-hint {
-  font-size: 0.55rem; letter-spacing: 0.25em; text-transform: uppercase;
-  color: var(--muted); text-align: center; margin-top: 0.5rem;
-  transition: opacity 0.5s;
+.fan-hint {
+  text-align: center; font-size: 0.55rem; letter-spacing: 0.25em;
+  text-transform: uppercase; color: var(--muted); transition: opacity 0.5s;
 }
 
 /* ── LIGHTBOX ── */
@@ -653,7 +659,7 @@ nav {
   <div class="section-wrap">
     <p class="section-label reveal">03 — Graphic Design</p>
     <h2 class="section-title reveal">Design Work</h2>
-    <p class="design-intro reveal">Signage systems, trail maps, logos, and visual communication — designed for the City of San Luis Obispo Parks & Recreation and beyond. Click any project to view.</p>
+    <p class="design-intro reveal">Signage systems, trail maps, logos, and visual communication designed for the City of SLO and beyond.</p>
 
     <div class="design-filters reveal">
       <button class="design-filter active" data-filter="all">All</button>
@@ -663,10 +669,8 @@ nav {
       <button class="design-filter" data-filter="misc">Misc</button>
     </div>
 
-    <div class="design-strip-outer reveal">
-      <div class="design-strip" id="design-strip"></div>
-    </div>
-    <p class="design-scroll-hint" id="design-scroll-hint">← Scroll to explore →</p>
+    <div class="fan-stage reveal" id="fan-stage"></div>
+    <p class="fan-hint" id="fan-hint">Hover to preview · Click to view full project</p>
   </div>
 </section>
 
@@ -939,18 +943,66 @@ nav {
 </div>
 
 <script>
-// ══ DESIGN GALLERY ══
-// To add a project: add an entry to this array and upload the file to /graphics/ in your repo
+// ══ DESIGN FAN GALLERY ══
+// Add a project: push an entry to DESIGN_PROJECTS, upload the PDF to /graphics/
+// For the image card: export first page as JPG and upload to /graphics/thumbs/, add thumbnail: 'graphics/thumbs/name.jpg'
 const DESIGN_PROJECTS = [
   {
-    title:    'Laguna Lake Bike Park',
-    subtitle: 'Full Signage Package · 12 pages',
-    category: 'signage',
-    year:     '2023',
-    file:     'graphics/Laguna_Bike_Park_-_ALL_SIGNAGE_V2.pdf'
+    title:     'Laguna Lake Bike Park',
+    subtitle:  'Full Signage Package · 12 pages',
+    category:  'signage',
+    year:      '2023',
+    file:      'graphics/Laguna_Bike_Park_-_ALL_SIGNAGE_V2.pdf',
+    thumbnail: ''
   },
-  // Add more projects here ↓
-  // { title: 'Project Name', subtitle: 'Description', category: 'maps', year: '2022', file: 'graphics/yourfile.pdf' },
+  {
+    title:     'SLO Open Space Trail Network',
+    subtitle:  'Wayfinding & Kiosk Signage',
+    category:  'signage',
+    year:      '2022',
+    file:      '#',
+    thumbnail: ''
+  },
+  {
+    title:     'Bishop Peak Trail Map',
+    subtitle:  'Public Recreation Map',
+    category:  'maps',
+    year:      '2021',
+    file:      '#',
+    thumbnail: ''
+  },
+  {
+    title:     'SLO Rangers',
+    subtitle:  'Identity & Badge Design',
+    category:  'logos',
+    year:      '2020',
+    file:      '#',
+    thumbnail: ''
+  },
+  {
+    title:     'Fuel Reduction Program',
+    subtitle:  'Public Education Materials',
+    category:  'misc',
+    year:      '2022',
+    file:      '#',
+    thumbnail: ''
+  },
+  {
+    title:     'Islay Hill Open Space',
+    subtitle:  'Trail Closure Map System',
+    category:  'maps',
+    year:      '2023',
+    file:      '#',
+    thumbnail: ''
+  },
+  {
+    title:     'Laguna Lake Park',
+    subtitle:  'Facility Signage System',
+    category:  'signage',
+    year:      '2021',
+    file:      '#',
+    thumbnail: ''
+  },
 ];
 
 const CAT_COLORS = {
@@ -960,57 +1012,100 @@ const CAT_COLORS = {
   misc:    '#787e84',
 };
 
-function buildDesignCards() {
-  const strip = document.getElementById('design-strip');
-  if (!strip) return;
-  strip.innerHTML = '';
-  DESIGN_PROJECTS.forEach((p, i) => {
+let activeFanProjects = [...DESIGN_PROJECTS];
+let fanCards = [];
+
+function buildFan(projects) {
+  const stage = document.getElementById('fan-stage');
+  if (!stage) return;
+  stage.innerHTML = '';
+  fanCards = [];
+
+  projects.forEach((p, i) => {
     const color = CAT_COLORS[p.category] || '#787e84';
-    const card = document.createElement('div');
-    card.className = 'design-card';
+    const card  = document.createElement('div');
+    card.className   = 'fan-card';
     card.dataset.category = p.category;
-    card.innerHTML = `
-      <div class="design-card-accent" style="background:${color}"></div>
-      <div class="design-card-body">
-        <span class="design-card-cat" style="color:${color};border-color:${color}40">${p.category}</span>
-        <div class="design-card-title">${p.title}</div>
-        <div class="design-card-sub">${p.subtitle || ''}</div>
-      </div>
-      <div class="design-card-footer">
-        <span class="design-card-year">${p.year}</span>
-        <span class="design-card-cta">View →</span>
-      </div>
-      <div class="design-card-num">${String(i + 1).padStart(2, '0')}</div>
-    `;
-    card.addEventListener('click', () => openLightbox(p, color));
-    strip.appendChild(card);
+
+    if (p.thumbnail) {
+      card.innerHTML = `
+        <div class="fan-face-img" style="background-image:url(${p.thumbnail})"></div>
+        <div class="fan-overlay">
+          <span class="fan-overlay-cat" style="color:${color}">${p.category}</span>
+          <span class="fan-overlay-title">${p.title}</span>
+          <span class="fan-overlay-cta">Click to view →</span>
+        </div>`;
+    } else {
+      card.innerHTML = `
+        <div class="fan-face-css" style="background:${color}18">
+          <div class="fan-face-accent" style="background:${color}"></div>
+          <span class="fan-face-cat" style="color:${color}">${p.category}</span>
+          <div class="fan-face-title">${p.title}</div>
+          <div class="fan-face-year">${p.year}</div>
+          <div class="fan-face-num">${String(i+1).padStart(2,'0')}</div>
+        </div>
+        <div class="fan-overlay">
+          <span class="fan-overlay-cat" style="color:${color}">${p.category}</span>
+          <span class="fan-overlay-title">${p.title}</span>
+          <span class="fan-overlay-cta">Click to view →</span>
+        </div>`;
+    }
+
+    card.addEventListener('mouseenter', () => applyFan(fanCards, i));
+    card.addEventListener('mouseleave', () => applyFan(fanCards, -1));
+    card.addEventListener('click',      () => openLightbox(p, color));
+    stage.appendChild(card);
+    fanCards.push(card);
+  });
+
+  applyFan(fanCards, -1);
+}
+
+function applyFan(cards, hoveredIdx) {
+  const n = cards.length;
+  if (!n) return;
+  const spread  = Math.min(10, (n - 1) * 5);  // max degrees per step
+  const xSpread = Math.min(60, (n - 1) * 32); // max px horizontal
+
+  cards.forEach((card, i) => {
+    const mid = (n - 1) / 2;
+    const t   = n > 1 ? (i - mid) / mid : 0;   // –1 → +1
+
+    const baseAngle = t * spread;
+    const baseX     = t * xSpread;
+    const baseY     = t * t * 20;               // parabolic drop at edges
+    const baseZ     = n - Math.round(Math.abs(t) * n);
+
+    if (hoveredIdx === i) {
+      card.style.transform = `translateX(${baseX}px) translateY(-72px) rotate(0deg) scale(1.1)`;
+      card.style.zIndex    = 100;
+    } else if (hoveredIdx >= 0) {
+      const push = (i < hoveredIdx ? -1 : 1) * Math.max(0, 14 - Math.abs(i - hoveredIdx) * 5);
+      card.style.transform = `translateX(${baseX + push}px) translateY(${baseY}px) rotate(${baseAngle}deg)`;
+      card.style.zIndex    = baseZ;
+    } else {
+      card.style.transform = `translateX(${baseX}px) translateY(${baseY}px) rotate(${baseAngle}deg)`;
+      card.style.zIndex    = baseZ;
+    }
   });
 }
 
-// Filter
+// Category filter
 document.querySelectorAll('.design-filter').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.design-filter').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     const f = btn.dataset.filter;
-    document.querySelectorAll('.design-card').forEach(c => {
-      c.classList.toggle('hidden', f !== 'all' && c.dataset.category !== f);
-    });
+    activeFanProjects = f === 'all' ? [...DESIGN_PROJECTS] : DESIGN_PROJECTS.filter(p => p.category === f);
+    buildFan(activeFanProjects);
   });
 });
 
-// Fade scroll hint after first scroll
-const strip = document.getElementById('design-strip');
-const hint  = document.getElementById('design-scroll-hint');
-if (strip && hint) {
-  strip.addEventListener('scroll', () => { hint.style.opacity = '0'; }, { once: true });
-}
-
 // Lightbox
-const lightbox = document.getElementById('design-lightbox');
-const lbIframe = document.getElementById('lightbox-iframe');
-const lbName   = document.getElementById('lightbox-name');
-const lbCat    = document.getElementById('lightbox-cat');
+const lightbox   = document.getElementById('design-lightbox');
+const lbIframe   = document.getElementById('lightbox-iframe');
+const lbName     = document.getElementById('lightbox-name');
+const lbCat      = document.getElementById('lightbox-cat');
 const lbFallback = document.getElementById('lightbox-fallback');
 
 function openLightbox(project, color) {
@@ -1022,7 +1117,6 @@ function openLightbox(project, color) {
   lightbox.classList.add('open');
   document.body.style.overflow = 'hidden';
 }
-
 function closeLightbox() {
   lightbox.classList.remove('open');
   document.body.style.overflow = '';
@@ -1033,7 +1127,7 @@ document.getElementById('lightbox-close').addEventListener('click', closeLightbo
 document.getElementById('lightbox-bg').addEventListener('click', closeLightbox);
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
 
-buildDesignCards();
+buildFan(activeFanProjects);
 
 // ── STL Viewer ──
 function initSTLViewer({ containerId, canvasId, loadingId, hintId, stlPath, azimuth = 45, elevation = 35, geomRotation = { x: 0, y: 0, z: 0 }, readoutAz = null, readoutEl = null, zoom = 1 }) {
@@ -1119,7 +1213,6 @@ function initSTLViewer({ containerId, canvasId, loadingId, hintId, stlPath, azim
       })();
     })
     .catch(err => {
-      console.error('STL viewer error:', err);
       if (loading) loading.innerHTML = '<span style="color:var(--orange);font-size:0.55rem;letter-spacing:0.15em;text-align:center;padding:1rem">Could not load model</span>';
     });
 
