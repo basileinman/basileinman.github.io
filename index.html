@@ -846,6 +846,18 @@ function initSTLViewer({ containerId, canvasId, loadingId, hintId, stlPath, azim
   controls.enableDamping = true;  controls.dampingFactor = 0.07;
   controls.rotateSpeed   = 0.65;  controls.zoomSpeed     = 0.9;
   controls.enablePan     = false; controls.minZoom = 0.25; controls.maxZoom = 8;
+  controls.autoRotate      = true;
+  controls.autoRotateSpeed = 0.6;
+
+  // Pause spin on grab, resume after 2s of inactivity
+  let resumeTimer;
+  canvas.addEventListener('pointerdown', () => {
+    controls.autoRotate = false;
+    clearTimeout(resumeTimer);
+  });
+  canvas.addEventListener('pointerup', () => {
+    resumeTimer = setTimeout(() => { controls.autoRotate = true; }, 2000);
+  });
 
   scene.add(new THREE.AmbientLight(0xffffff, 0.5));
   const sun = new THREE.DirectionalLight(0xfff4e0, 1.1); sun.position.set(2, 3.5, 2); scene.add(sun);
@@ -900,7 +912,7 @@ requestAnimationFrame(() => {
     containerId: 'bridge-container', canvasId: 'bridge-canvas',
     loadingId: 'bridge-loading', hintId: 'bridge-hint',
     stlPath: 'models/Bridge_Assembly.stl',
-    azimuth: 315, elevation: 30,
+    azimuth: 315, elevation: 15,
     geomRotation: { x: -90, y: -90, z: 0 }
   });
 });
