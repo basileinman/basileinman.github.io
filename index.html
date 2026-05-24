@@ -552,12 +552,6 @@ nav {
           </div>
           <div class="stl-hint" id="bridge-hint">Drag to rotate · Scroll to zoom</div>
           <div class="cad-label-overlay">Onshape · STL · Interactive</div>
-          <!-- DEV: orbit to the angle you want, note the Az/El values, then tell Claude -->
-          <div id="angle-controls" style="position:absolute;top:0.6rem;left:0.6rem;background:rgba(0,0,0,0.8);padding:0.5rem 0.8rem;font-family:monospace;font-size:0.62rem;color:#e2d9c5;z-index:10;border:1px solid #2a2a20;pointer-events:none;line-height:1.8;">
-            <div style="color:#c96018;font-size:0.5rem;letter-spacing:0.15em;margin-bottom:0.2rem;">ORBIT TO YOUR VIEW</div>
-            <div>Az: <span id="val-az">—</span>°</div>
-            <div>El: <span id="val-el">—</span>°</div>
-          </div>
         </div>
         <div class="cad-info">
           <div class="cad-name">Trail Bridge</div>
@@ -885,17 +879,7 @@ function initSTLViewer({ containerId, canvasId, loadingId, hintId, stlPath, azim
       camera.lookAt(0, 0, 0);
       controls.update();
 
-      // Live angle readout
-      const valAz = document.getElementById('val-az');
-      const valEl = document.getElementById('val-el');
-      function readAngles() {
-        const p = camera.position, r = p.length();
-        const elDeg = Math.round(Math.asin(p.y / r) * 180 / Math.PI);
-        const azDeg = Math.round(((Math.atan2(p.x, p.z) * 180 / Math.PI) + 360) % 360);
-        if (valAz) valAz.textContent = azDeg;
-        if (valEl) valEl.textContent = elDeg;
-      }
-      (function loop() { requestAnimationFrame(loop); controls.update(); readAngles(); renderer.render(scene, camera); })();
+      (function loop() { requestAnimationFrame(loop); controls.update(); renderer.render(scene, camera); })();
     })
     .catch(err => {
       console.error('STL viewer error:', err);
@@ -916,7 +900,7 @@ requestAnimationFrame(() => {
     containerId: 'bridge-container', canvasId: 'bridge-canvas',
     loadingId: 'bridge-loading', hintId: 'bridge-hint',
     stlPath: 'models/Bridge_Assembly.stl',
-    azimuth: 225, elevation: 30,
+    azimuth: 315, elevation: 30,
     geomRotation: { x: -90, y: -90, z: 0 }
   });
 });
