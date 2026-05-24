@@ -569,11 +569,6 @@ nav {
           </div>
           <div class="stl-hint" id="kiosk-hint">Drag to rotate · Scroll to zoom</div>
           <div class="cad-label-overlay">Onshape · STL · Interactive</div>
-          <div id="kiosk-angle-controls" style="position:absolute;top:0.6rem;left:0.6rem;background:rgba(0,0,0,0.8);padding:0.5rem 0.8rem;font-family:monospace;font-size:0.62rem;color:#e2d9c5;z-index:10;border:1px solid #2a2a20;pointer-events:none;line-height:1.8;">
-            <div style="color:#c96018;font-size:0.5rem;letter-spacing:0.15em;margin-bottom:0.2rem;">ORBIT TO YOUR VIEW</div>
-            <div>Az: <span id="kiosk-val-az">—</span>°</div>
-            <div>El: <span id="kiosk-val-el">—</span>°</div>
-          </div>
         </div>
         <div class="cad-info">
           <div class="cad-name">Trailhead Kiosk</div>
@@ -591,11 +586,6 @@ nav {
           </div>
           <div class="stl-hint" id="cattle-hint">Drag to rotate · Scroll to zoom</div>
           <div class="cad-label-overlay">Onshape · STL · Interactive</div>
-          <div id="cattle-angle-controls" style="position:absolute;top:0.6rem;left:0.6rem;background:rgba(0,0,0,0.8);padding:0.5rem 0.8rem;font-family:monospace;font-size:0.62rem;color:#e2d9c5;z-index:10;border:1px solid #2a2a20;pointer-events:none;line-height:1.8;">
-            <div style="color:#c96018;font-size:0.5rem;letter-spacing:0.15em;margin-bottom:0.2rem;">ORBIT TO YOUR VIEW</div>
-            <div>Az: <span id="cattle-val-az">—</span>°</div>
-            <div>El: <span id="cattle-val-el">—</span>°</div>
-          </div>
         </div>
         <div class="cad-info">
           <div class="cad-name">Metal Cattle Guard</div>
@@ -758,7 +748,7 @@ nav {
 
 <script>
 // ── STL Viewer ──
-function initSTLViewer({ containerId, canvasId, loadingId, hintId, stlPath, azimuth = 45, elevation = 35, geomRotation = { x: 0, y: 0, z: 0 }, readoutAz = null, readoutEl = null }) {
+function initSTLViewer({ containerId, canvasId, loadingId, hintId, stlPath, azimuth = 45, elevation = 35, geomRotation = { x: 0, y: 0, z: 0 }, readoutAz = null, readoutEl = null, zoom = 1 }) {
   const container = document.getElementById(containerId);
   const canvas    = document.getElementById(canvasId);
   const loading   = document.getElementById(loadingId);
@@ -818,7 +808,7 @@ function initSTLViewer({ containerId, canvasId, loadingId, hintId, stlPath, azim
       scene.add(new THREE.Mesh(geo, new THREE.MeshLambertMaterial({ color: 0x96836a })));
       if (loading) loading.style.display = 'none';
 
-      F = maxD * 0.62;
+      F = (maxD * 0.62) / zoom;
       camera.left = -F*aspect; camera.right = F*aspect; camera.top = F; camera.bottom = -F;
       camera.updateProjectionMatrix();
 
@@ -860,23 +850,22 @@ requestAnimationFrame(() => {
     loadingId: 'bridge-loading', hintId: 'bridge-hint',
     stlPath: 'models/Bridge_Assembly.stl',
     azimuth: 315, elevation: 15,
-    geomRotation: { x: -90, y: -90, z: 0 }
+    geomRotation: { x: -90, y: -90, z: 0 },
+    zoom: 1.8
   });
   initSTLViewer({
     containerId: 'kiosk-container', canvasId: 'kiosk-canvas',
     loadingId: 'kiosk-loading', hintId: 'kiosk-hint',
     stlPath: 'models/Large_Kiosk_Assembly.stl',
     azimuth: 315, elevation: 15,
-    geomRotation: { x: -90, y: -90, z: 0 },
-    readoutAz: 'kiosk-val-az', readoutEl: 'kiosk-val-el'
+    geomRotation: { x: -90, y: -90, z: 0 }
   });
   initSTLViewer({
     containerId: 'cattle-container', canvasId: 'cattle-canvas',
     loadingId: 'cattle-loading', hintId: 'cattle-hint',
     stlPath: 'models/Metal_Cattle_Guard.stl',
     azimuth: 315, elevation: 15,
-    geomRotation: { x: -90, y: -90, z: 0 },
-    readoutAz: 'cattle-val-az', readoutEl: 'cattle-val-el'
+    geomRotation: { x: -90, y: -90, z: 0 }
   });
 });
 
