@@ -196,23 +196,73 @@ nav {
 .video-label { margin-top: 0.8rem; font-size: 0.62rem; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; }
 .video-label strong { color: var(--text); display: block; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: none; margin-bottom: 0.2rem; font-weight: 400; }
 
+/* ── STL VIEWER ── */
+.stl-canvas {
+  position: absolute; inset: 0;
+  width: 100% !important; height: 100% !important;
+  display: block;
+}
+.stl-loading {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 0.8rem;
+  font-size: 0.55rem; letter-spacing: 0.3em;
+  text-transform: uppercase; color: var(--muted);
+  pointer-events: none;
+}
+.stl-loading-bar {
+  width: 60px; height: 1px;
+  background: var(--line); position: relative; overflow: hidden;
+}
+.stl-loading-bar::after {
+  content: ''; position: absolute; inset: 0;
+  background: var(--orange);
+  animation: loadScan 1.2s ease-in-out infinite;
+  transform-origin: left;
+}
+@keyframes loadScan {
+  0%   { transform: scaleX(0) translateX(0); }
+  50%  { transform: scaleX(1) translateX(0); }
+  100% { transform: scaleX(0) translateX(100px); }
+}
+.stl-hint {
+  position: absolute; bottom: 0.6rem; left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.48rem; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--muted);
+  pointer-events: none; transition: opacity 1s ease;
+  white-space: nowrap;
+}
+
 /* ── CAD SECTION ── */
 #cad { border-top: 1px solid var(--line); }
 .cad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
-.cad-card { background: var(--bg2); border: 1px solid var(--line); overflow: hidden; position: relative; }
-.cad-frame-wrap {
-  position: relative; width: 100%; padding-top: 75%;
-  background: #080808; overflow: hidden;
+.cad-card { background: var(--bg2); border: 1px solid var(--line); overflow: hidden; position: relative; transition: border-color 0.3s; }
+.cad-card:hover { border-color: #2e2e26; }
+.cad-preview {
+  position: relative; width: 100%; aspect-ratio: 4/3;
+  background: #070707; display: flex; align-items: center; justify-content: center;
+  border-bottom: 1px solid var(--line); overflow: hidden;
 }
-.cad-frame-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.cad-preview::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 18px, rgba(255,255,255,0.015) 18px, rgba(255,255,255,0.015) 19px),
+    repeating-linear-gradient(90deg, transparent, transparent 18px, rgba(255,255,255,0.015) 18px, rgba(255,255,255,0.015) 19px);
+}
+.cad-axes { width: 75%; height: 75%; position: relative; z-index: 1; }
+.cad-axes svg { width: 100%; height: 100%; }
+.cad-label-overlay {
+  position: absolute; bottom: 0.7rem; right: 0.8rem;
+  font-size: 0.48rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--muted); background: rgba(7,7,7,0.7); padding: 0.2rem 0.5rem;
+  border: 1px solid var(--line);
+}
 .cad-info { padding: 1.2rem 1.4rem; border-top: 1px solid var(--line); }
 .cad-name { font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--cream); margin-bottom: 0.3rem; }
 .cad-meta { font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--metal); }
-.cad-link {
-  display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 0.8rem;
-  font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase;
-  color: var(--orange); text-decoration: none; transition: gap 0.2s;
-}
+.cad-link { display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 0.8rem; font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--orange); text-decoration: none; transition: gap 0.2s; }
 .cad-link:hover { gap: 0.7rem; }
 
 /* ── PROJECTS ── */
@@ -332,6 +382,9 @@ nav {
   .form-row { grid-template-columns: 1fr; }
 }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/loaders/STLLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/controls/OrbitControls.js"></script>
 </head>
 <body>
 
@@ -491,34 +544,126 @@ nav {
     <div class="cad-grid">
 
       <div class="cad-card reveal">
-        <div class="cad-frame-wrap">
-          <iframe src="https://cad.onshape.com/documents/4bdf9ef6f3104fd64fb93d5a/w/958a8d63aec8089010890d4a/e/260f4e50d05b396944f99df3" allowfullscreen></iframe>
+        <div class="cad-preview" id="bridge-container">
+          <canvas id="bridge-canvas" class="stl-canvas"></canvas>
+          <div class="stl-loading" id="bridge-loading">
+            <div class="stl-loading-bar"></div>
+            Loading Model
+          </div>
+          <div class="stl-hint" id="bridge-hint">Drag to rotate · Scroll to zoom</div>
+          <div class="cad-label-overlay">Onshape · STL · Interactive</div>
         </div>
         <div class="cad-info">
           <div class="cad-name">Trail Bridge</div>
-          <div class="cad-meta">Onshape CAD · Structural · Wood & Metal</div>
+          <div class="cad-meta">Structural · Wood &amp; Metal · Field Install</div>
           <a href="https://cad.onshape.com/documents/4bdf9ef6f3104fd64fb93d5a/w/958a8d63aec8089010890d4a/e/260f4e50d05b396944f99df3" target="_blank" class="cad-link">Open in Onshape →</a>
         </div>
       </div>
 
       <div class="cad-card reveal">
-        <div class="cad-frame-wrap">
-          <iframe src="https://cad.onshape.com/documents/278f8c71ab8b0e9f9e6a7b77/w/7503e107472b54b815a59911/e/d89430b76a9dbe53c30e2016" allowfullscreen></iframe>
+        <div class="cad-preview">
+          <div class="cad-axes">
+            <svg viewBox="0 0 140 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Post base U-brackets (4 posts) -->
+              <rect x="16" y="83" width="7" height="5" stroke="#d4881a" stroke-width="0.7" fill="rgba(212,136,26,0.06)" opacity="0.8"/>
+              <rect x="44" y="80" width="7" height="5" stroke="#d4881a" stroke-width="0.7" fill="rgba(212,136,26,0.06)" opacity="0.8"/>
+              <rect x="70" y="78" width="7" height="5" stroke="#d4881a" stroke-width="0.7" fill="rgba(212,136,26,0.06)" opacity="0.8"/>
+              <rect x="96" y="75" width="7" height="5" stroke="#d4881a" stroke-width="0.7" fill="rgba(212,136,26,0.06)" opacity="0.8"/>
+              <!-- 4 vertical posts -->
+              <line x1="19" y1="83" x2="19" y2="43" stroke="#d4881a" stroke-width="1.4"/>
+              <line x1="47" y1="80" x2="47" y2="40" stroke="#d4881a" stroke-width="1.4"/>
+              <line x1="73" y1="78" x2="73" y2="38" stroke="#d4881a" stroke-width="1.4"/>
+              <line x1="99" y1="75" x2="99" y2="35" stroke="#d4881a" stroke-width="1.4"/>
+              <!-- Roof top surface (overhangs posts by ~6px each side) -->
+              <polygon points="12,38 107,27 114,40 19,51" fill="rgba(212,136,26,0.09)" stroke="#d4881a" stroke-width="1.2"/>
+              <!-- Roof front face (thickness) -->
+              <polygon points="12,38 107,27 107,34 12,45" fill="rgba(212,136,26,0.14)" stroke="#d4881a" stroke-width="0.85"/>
+              <!-- Roof right end cap -->
+              <polygon points="107,27 114,40 114,47 107,34" fill="rgba(212,136,26,0.1)" stroke="#d4881a" stroke-width="0.8" opacity="0.7"/>
+              <!-- Display panel 1 (between posts 1 and 2) -->
+              <polygon points="19,47 47,43 47,73 19,77" fill="rgba(212,136,26,0.05)" stroke="#d4881a" stroke-width="0.95"/>
+              <!-- Panel 1 inner frame -->
+              <polygon points="22,50 44,46 44,70 22,74" fill="none" stroke="#d4881a" stroke-width="0.55" opacity="0.5"/>
+              <!-- Display panel 2 (between posts 2 and 3) -->
+              <polygon points="47,43 73,40 73,70 47,73" fill="rgba(212,136,26,0.05)" stroke="#d4881a" stroke-width="0.95"/>
+              <!-- Panel 2 inner frame -->
+              <polygon points="50,46 70,43 70,67 50,70" fill="none" stroke="#d4881a" stroke-width="0.55" opacity="0.5"/>
+              <!-- Brochure holder on post 4 (small box with bracket) -->
+              <rect x="93" y="52" width="9" height="13" stroke="#d4881a" stroke-width="0.85" fill="rgba(212,136,26,0.08)"/>
+              <line x1="99" y1="58" x2="99" y2="52" stroke="#d4881a" stroke-width="0.7" opacity="0.6"/>
+              <!-- Post depth faces (far side hint) -->
+              <line x1="26" y1="55" x2="26" y2="43" stroke="#d4881a" stroke-width="0.7" opacity="0.35"/>
+              <line x1="54" y1="52" x2="54" y2="40" stroke="#d4881a" stroke-width="0.7" opacity="0.35"/>
+              <line x1="80" y1="50" x2="80" y2="38" stroke="#d4881a" stroke-width="0.7" opacity="0.35"/>
+            </svg>
+          </div>
+          <div class="cad-label-overlay">Onshape · Public</div>
         </div>
         <div class="cad-info">
           <div class="cad-name">Trailhead Kiosk</div>
-          <div class="cad-meta">Onshape CAD · Infrastructure · Signage</div>
+          <div class="cad-meta">Infrastructure · Signage · City Install</div>
           <a href="https://cad.onshape.com/documents/278f8c71ab8b0e9f9e6a7b77/w/7503e107472b54b815a59911/e/d89430b76a9dbe53c30e2016" target="_blank" class="cad-link">Open in Onshape →</a>
         </div>
       </div>
 
       <div class="cad-card reveal">
-        <div class="cad-frame-wrap">
-          <iframe src="https://cad.onshape.com/documents/24363476ea6bfb8d1e544c02/w/1776dc632fae722eddf2b2d0/e/1bb03d5f1e918d816787cc2f" allowfullscreen></iframe>
+        <div class="cad-preview">
+          <div class="cad-axes">
+            <svg viewBox="0 0 140 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Base ground frame -->
+              <line x1="14" y1="88" x2="28" y2="100" stroke="#787e84" stroke-width="1.2"/>
+              <line x1="14" y1="88" x2="46" y2="96" stroke="#787e84" stroke-width="1.0" opacity="0.6"/>
+              <line x1="28" y1="100" x2="60" y2="108" stroke="#787e84" stroke-width="1.0" opacity="0.6"/>
+              <line x1="46" y1="96" x2="60" y2="108" stroke="#787e84" stroke-width="0.85" opacity="0.45"/>
+              <!-- Corner post boxes at base -->
+              <rect x="10" y="84" width="8" height="8" stroke="#787e84" stroke-width="0.9" fill="rgba(120,126,132,0.08)"/>
+              <rect x="24" y="96" width="8" height="8" stroke="#787e84" stroke-width="0.9" fill="rgba(120,126,132,0.08)"/>
+              <!-- Far outer rail (back diagonal) -->
+              <line x1="14" y1="88" x2="84" y2="26" stroke="#787e84" stroke-width="1.4"/>
+              <!-- Near outer rail (front diagonal) -->
+              <line x1="28" y1="100" x2="98" y2="38" stroke="#787e84" stroke-width="1.4"/>
+              <!-- Step risers (7 steps, connecting near to far rail) -->
+              <line x1="23" y1="80" x2="37" y2="92" stroke="#787e84" stroke-width="1.1"/>
+              <line x1="32" y1="72" x2="46" y2="84" stroke="#787e84" stroke-width="1.1"/>
+              <line x1="41" y1="64" x2="55" y2="76" stroke="#787e84" stroke-width="1.1"/>
+              <line x1="50" y1="56" x2="64" y2="68" stroke="#787e84" stroke-width="1.1"/>
+              <line x1="59" y1="48" x2="73" y2="60" stroke="#787e84" stroke-width="1.1"/>
+              <line x1="68" y1="40" x2="82" y2="52" stroke="#787e84" stroke-width="1.1"/>
+              <line x1="77" y1="32" x2="91" y2="44" stroke="#787e84" stroke-width="1.1"/>
+              <!-- Tread bars (2 extra parallel bars per step) -->
+              <line x1="26" y1="77" x2="40" y2="89" stroke="#787e84" stroke-width="0.65" opacity="0.55"/>
+              <line x1="29" y1="74" x2="43" y2="86" stroke="#787e84" stroke-width="0.65" opacity="0.55"/>
+              <line x1="35" y1="69" x2="49" y2="81" stroke="#787e84" stroke-width="0.65" opacity="0.55"/>
+              <line x1="38" y1="66" x2="52" y2="78" stroke="#787e84" stroke-width="0.65" opacity="0.55"/>
+              <line x1="44" y1="61" x2="58" y2="73" stroke="#787e84" stroke-width="0.65" opacity="0.55"/>
+              <line x1="47" y1="58" x2="61" y2="70" stroke="#787e84" stroke-width="0.65" opacity="0.55"/>
+              <line x1="53" y1="53" x2="67" y2="65" stroke="#787e84" stroke-width="0.65" opacity="0.55"/>
+              <line x1="56" y1="50" x2="70" y2="62" stroke="#787e84" stroke-width="0.65" opacity="0.55"/>
+              <line x1="62" y1="45" x2="76" y2="57" stroke="#787e84" stroke-width="0.65" opacity="0.55"/>
+              <line x1="65" y1="42" x2="79" y2="54" stroke="#787e84" stroke-width="0.65" opacity="0.55"/>
+              <line x1="71" y1="37" x2="85" y2="49" stroke="#787e84" stroke-width="0.65" opacity="0.55"/>
+              <line x1="74" y1="34" x2="88" y2="46" stroke="#787e84" stroke-width="0.65" opacity="0.55"/>
+              <!-- Top landing platform -->
+              <line x1="84" y1="26" x2="98" y2="38" stroke="#787e84" stroke-width="1.2"/>
+              <line x1="84" y1="26" x2="116" y2="34" stroke="#787e84" stroke-width="1.2"/>
+              <line x1="98" y1="38" x2="130" y2="46" stroke="#787e84" stroke-width="1.2"/>
+              <line x1="116" y1="34" x2="130" y2="46" stroke="#787e84" stroke-width="1.0" opacity="0.7"/>
+              <!-- Landing handrail posts with cap plates -->
+              <line x1="84" y1="26" x2="84" y2="13" stroke="#787e84" stroke-width="1.2"/>
+              <line x1="116" y1="34" x2="116" y2="21" stroke="#787e84" stroke-width="1.2"/>
+              <line x1="84" y1="13" x2="116" y2="21" stroke="#787e84" stroke-width="1.0" opacity="0.8"/>
+              <!-- Cap plates -->
+              <line x1="81" y1="13" x2="87" y2="13" stroke="#787e84" stroke-width="1.3"/>
+              <line x1="113" y1="21" x2="119" y2="21" stroke="#787e84" stroke-width="1.3"/>
+              <rect x="81" y="23" width="8" height="7" stroke="#787e84" stroke-width="0.9" fill="rgba(120,126,132,0.08)"/>
+              <rect x="113" y="31" width="8" height="7" stroke="#787e84" stroke-width="0.9" fill="rgba(120,126,132,0.08)"/>
+            </svg>
+          </div>
+          <div class="cad-label-overlay">Onshape · Public</div>
         </div>
         <div class="cad-info">
           <div class="cad-name">Metal Cattle Guard</div>
-          <div class="cad-meta">Onshape CAD · Metalwork · Field Install</div>
+          <div class="cad-meta">Metalwork · Fabrication · Field Install</div>
           <a href="https://cad.onshape.com/documents/24363476ea6bfb8d1e544c02/w/1776dc632fae722eddf2b2d0/e/1bb03d5f1e918d816787cc2f" target="_blank" class="cad-link">Open in Onshape →</a>
         </div>
       </div>
@@ -709,6 +854,126 @@ setInterval(() => {
     roleEl.style.opacity = '1'; roleEl.style.transform = 'translateY(0)';
   }, 320);
 }, 2400);
+
+// ── Three.js STL Viewer ──
+function initSTLViewer({ containerId, canvasId, loadingId, hintId, stlPath }) {
+  const container = document.getElementById(containerId);
+  const canvas    = document.getElementById(canvasId);
+  const loading   = document.getElementById(loadingId);
+  const hint      = document.getElementById(hintId);
+  if (!container || !canvas) return;
+
+  // Wait for layout so clientWidth/Height are non-zero
+  requestAnimationFrame(() => {
+    const W = container.clientWidth;
+    const H = container.clientHeight;
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(W, H);
+    renderer.setClearColor(0x070707);
+
+    const scene = new THREE.Scene();
+
+    // Orthographic camera for true isometric look
+    const aspect = W / H;
+    let F = 100;
+    const camera = new THREE.OrthographicCamera(-F*aspect, F*aspect, F, -F, -50000, 50000);
+
+    // Controls
+    const controls = new THREE.OrbitControls(camera, canvas);
+    controls.enableDamping  = true;
+    controls.dampingFactor  = 0.07;
+    controls.rotateSpeed    = 0.65;
+    controls.zoomSpeed      = 0.9;
+    controls.enablePan      = false;
+    controls.minZoom        = 0.3;
+    controls.maxZoom        = 6;
+
+    // Lighting
+    scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+    const sun = new THREE.DirectionalLight(0xfff4e0, 1.05);
+    sun.position.set(2, 3.5, 2);
+    scene.add(sun);
+    const fill = new THREE.DirectionalLight(0xb8d4ff, 0.35);
+    fill.position.set(-2, 0.5, -1.5);
+    scene.add(fill);
+    const rim = new THREE.DirectionalLight(0xffffff, 0.15);
+    rim.position.set(0, -1, 2);
+    scene.add(rim);
+
+    // Fade hint after first interaction
+    let hinted = false;
+    canvas.addEventListener('pointerdown', () => {
+      if (!hinted) { hinted = true; if (hint) hint.style.opacity = '0'; }
+    }, { once: false });
+
+    fetch(stlPath)
+      .then(r => { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); })
+      .then(buf => {
+        const geo = new THREE.STLLoader().parse(buf);
+        geo.computeVertexNormals();
+        geo.computeBoundingBox();
+
+        const box  = geo.boundingBox;
+        const ctr  = new THREE.Vector3();
+        box.getCenter(ctr);
+        const sz   = new THREE.Vector3();
+        box.getSize(sz);
+        const maxD = Math.max(sz.x, sz.y, sz.z);
+
+        geo.translate(-ctr.x, -ctr.y, -ctr.z);
+
+        const mat  = new THREE.MeshLambertMaterial({ color: 0x96836a });
+        const mesh = new THREE.Mesh(geo, mat);
+        scene.add(mesh);
+
+        if (loading) loading.style.display = 'none';
+
+        // Fit camera to model
+        F = maxD * 0.62;
+        camera.left   = -F * aspect;
+        camera.right  =  F * aspect;
+        camera.top    =  F;
+        camera.bottom = -F;
+        camera.updateProjectionMatrix();
+
+        // Classic isometric angle: equal x/y/z distance, slight tilt
+        const d = maxD * 1.1;
+        camera.position.set(d, d * 0.72, d);
+        camera.lookAt(0, 0, 0);
+        controls.update();
+
+        // Render loop
+        (function loop() { requestAnimationFrame(loop); controls.update(); renderer.render(scene, camera); })();
+      })
+      .catch(() => {
+        if (loading) {
+          loading.innerHTML = '<span style="color:var(--orange);font-size:0.55rem;letter-spacing:0.15em;text-align:center;padding:1rem">Add STL to<br>/models/ in repo</span>';
+        }
+      });
+
+    // Resize handling
+    new ResizeObserver(() => {
+      const nW = container.clientWidth, nH = container.clientHeight;
+      renderer.setSize(nW, nH);
+      const nA = nW / nH;
+      camera.left = -F*nA; camera.right = F*nA;
+      camera.updateProjectionMatrix();
+    }).observe(container);
+  });
+}
+
+// Init viewers on page load
+window.addEventListener('load', () => {
+  initSTLViewer({
+    containerId: 'bridge-container',
+    canvasId:    'bridge-canvas',
+    loadingId:   'bridge-loading',
+    hintId:      'bridge-hint',
+    stlPath:     'models/Bridge_Assembly.stl'
+  });
+});
 
 // ── Scroll reveals ──
 const revEls = document.querySelectorAll('.reveal');
