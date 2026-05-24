@@ -382,6 +382,9 @@ nav {
   .form-row { grid-template-columns: 1fr; }
 }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 </head>
 <body>
 
@@ -888,121 +891,6 @@ if (form) {
     } catch { btn.textContent = 'Error — try again'; btn.disabled = false; }
   });
 }
-</script>
-<script type="module">
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.module.js';
-import { STLLoader }      from 'https://cdn.jsdelivr.net/npm/three@0.157.0/examples/jsm/loaders/STLLoader.js';
-import { OrbitControls }  from 'https://cdn.jsdelivr.net/npm/three@0.157.0/examples/jsm/controls/OrbitControls.js';
-
-function initSTLViewer({ containerId, canvasId, loadingId, hintId, stlPath, azimuth = 45, elevation = 35 }) {
-  const container = document.getElementById(containerId);
-  const canvas    = document.getElementById(canvasId);
-  const loading   = document.getElementById(loadingId);
-  const hint      = document.getElementById(hintId);
-  if (!container || !canvas) return;
-
-  const W = container.clientWidth  || 400;
-  const H = container.clientHeight || 300;
-  const aspect = W / H;
-
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setSize(W, H);
-  renderer.setClearColor(0x070707);
-
-  const scene = new THREE.Scene();
-
-  // Orthographic camera — true isometric, no perspective distortion
-  let F = 100;
-  const camera = new THREE.OrthographicCamera(-F*aspect, F*aspect, F, -F, -50000, 50000);
-
-  const controls = new OrbitControls(camera, canvas);
-  controls.enableDamping = true;
-  controls.dampingFactor = 0.07;
-  controls.rotateSpeed   = 0.65;
-  controls.zoomSpeed     = 0.9;
-  controls.enablePan     = false;
-  controls.minZoom       = 0.25;
-  controls.maxZoom       = 8;
-
-  // Three-point lighting
-  scene.add(new THREE.AmbientLight(0xffffff, 0.5));
-  const sun = new THREE.DirectionalLight(0xfff4e0, 1.1);
-  sun.position.set(2, 3.5, 2);
-  scene.add(sun);
-  const fill = new THREE.DirectionalLight(0xb8d4ff, 0.35);
-  fill.position.set(-2, 0.5, -1.5);
-  scene.add(fill);
-  const rim = new THREE.DirectionalLight(0xffffff, 0.12);
-  rim.position.set(0, -1, 2);
-  scene.add(rim);
-
-  canvas.addEventListener('pointerdown', () => {
-    if (hint) hint.style.opacity = '0';
-  }, { once: true });
-
-  fetch(stlPath)
-    .then(r => { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); })
-    .then(buf => {
-      const geo = new STLLoader().parse(buf);
-      geo.computeVertexNormals();
-      geo.computeBoundingBox();
-
-      const box = geo.boundingBox;
-      const ctr = new THREE.Vector3();  box.getCenter(ctr);
-      const sz  = new THREE.Vector3();  box.getSize(sz);
-      const maxD = Math.max(sz.x, sz.y, sz.z);
-
-      geo.translate(-ctr.x, -ctr.y, -ctr.z);
-
-      const mat  = new THREE.MeshLambertMaterial({ color: 0x96836a });
-      const mesh = new THREE.Mesh(geo, mat);
-      scene.add(mesh);
-
-      if (loading) loading.style.display = 'none';
-
-      // Fit orthographic frustum to model
-      F = maxD * 0.62;
-      camera.left = -F*aspect;  camera.right  =  F*aspect;
-      camera.top  =  F;         camera.bottom = -F;
-      camera.updateProjectionMatrix();
-
-      // Position camera using azimuth + elevation angles
-      const az  = azimuth   * Math.PI / 180;
-      const el  = elevation * Math.PI / 180;
-      const d   = maxD * 1.8;
-      camera.position.set(
-        d * Math.cos(el) * Math.sin(az),
-        d * Math.sin(el),
-        d * Math.cos(el) * Math.cos(az)
-      );
-      camera.lookAt(0, 0, 0);
-      controls.update();
-
-      (function loop() { requestAnimationFrame(loop); controls.update(); renderer.render(scene, camera); })();
-    })
-    .catch(err => {
-      console.error('STL viewer error:', err);
-      if (loading) loading.innerHTML = '<span style="color:var(--orange);font-size:0.55rem;letter-spacing:0.15em;text-align:center;padding:1rem">Could not load model</span>';
-    });
-
-  new ResizeObserver(() => {
-    const nW = container.clientWidth, nH = container.clientHeight;
-    if (!nW || !nH) return;
-    renderer.setSize(nW, nH);
-    const nA = nW / nH;
-    camera.left = -F*nA; camera.right = F*nA;
-    camera.updateProjectionMatrix();
-  }).observe(container);
-}
-
-initSTLViewer({
-  containerId: 'bridge-container',
-  canvasId:    'bridge-canvas',
-  loadingId:   'bridge-loading',
-  hintId:      'bridge-hint',
-  stlPath:     'models/Bridge_Assembly.stl'
-});
 </script>
 </body>
 </html>
