@@ -177,6 +177,157 @@ nav {
 .award { display: flex; align-items: flex-start; gap: 1rem; font-size: 0.72rem; color: var(--muted); line-height: 1.6; }
 .award::before { content: '★'; color: var(--amber); flex-shrink: 0; margin-top: 0.1rem; }
 
+/* ── DESIGN SECTION ── */
+#design { background: var(--bg2); border-top: 1px solid var(--line); }
+
+.design-intro { font-size: 0.75rem; color: var(--muted); line-height: 1.9; max-width: 520px; margin-bottom: 2.5rem; }
+
+.design-filters {
+  display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2.5rem;
+}
+.design-filter {
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  padding: 0.4rem 0.9rem; border: 1px solid var(--line);
+  background: none; color: var(--muted); cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+.design-filter:hover { color: var(--text); border-color: #2e2e26; }
+.design-filter.active { color: var(--bg); background: var(--orange); border-color: var(--orange); }
+
+.design-strip-outer {
+  position: relative;
+}
+.design-strip-outer::before,
+.design-strip-outer::after {
+  content: ''; position: absolute; top: 0; bottom: 0; width: 60px; z-index: 2; pointer-events: none;
+}
+.design-strip-outer::before { left: 0; background: linear-gradient(to right, var(--bg2), transparent); }
+.design-strip-outer::after  { right: 0; background: linear-gradient(to left, var(--bg2), transparent); }
+
+.design-strip {
+  display: flex; gap: 1rem; overflow-x: auto; padding: 0.5rem 0 1.5rem;
+  scroll-snap-type: x mandatory; scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.design-strip::-webkit-scrollbar { display: none; }
+
+.design-card {
+  flex-shrink: 0; width: 190px; height: 260px;
+  background: var(--bg); border: 1px solid var(--line);
+  display: flex; flex-direction: column; justify-content: space-between;
+  padding: 1.4rem 1.2rem 1.2rem;
+  scroll-snap-align: start; cursor: pointer; position: relative; overflow: hidden;
+  transition: border-color 0.25s, background 0.25s;
+}
+.design-card:hover { border-color: #2e2e26; background: #111109; }
+.design-card.hidden { display: none; }
+
+.design-card-accent {
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  transition: height 0.25s;
+}
+.design-card:hover .design-card-accent { height: 3px; }
+
+.design-card-num {
+  font-family: 'Bebas Neue', sans-serif; font-size: 4rem;
+  line-height: 1; color: rgba(255,255,255,0.04); position: absolute;
+  bottom: -10px; right: 10px; pointer-events: none;
+  transition: color 0.25s;
+}
+.design-card:hover .design-card-num { color: rgba(255,255,255,0.07); }
+
+.design-card-body { position: relative; z-index: 1; }
+
+.design-card-cat {
+  font-size: 0.48rem; letter-spacing: 0.25em; text-transform: uppercase;
+  padding: 0.2rem 0.5rem; border: 1px solid currentColor;
+  display: inline-block; margin-bottom: 1rem;
+}
+.design-card-title {
+  font-family: 'Barlow Condensed', sans-serif; font-size: 1.15rem;
+  font-weight: 700; color: var(--cream); line-height: 1.2;
+}
+.design-card-sub {
+  font-size: 0.6rem; color: var(--muted); margin-top: 0.4rem; line-height: 1.6;
+}
+
+.design-card-footer {
+  position: relative; z-index: 1;
+  display: flex; justify-content: space-between; align-items: flex-end;
+}
+.design-card-year { font-size: 0.6rem; color: var(--muted); letter-spacing: 0.1em; }
+.design-card-cta {
+  font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--orange); opacity: 0; transform: translateX(-4px);
+  transition: opacity 0.2s, transform 0.2s;
+}
+.design-card:hover .design-card-cta { opacity: 1; transform: none; }
+
+.design-scroll-hint {
+  font-size: 0.55rem; letter-spacing: 0.25em; text-transform: uppercase;
+  color: var(--muted); text-align: center; margin-top: 0.5rem;
+  transition: opacity 0.5s;
+}
+
+/* ── LIGHTBOX ── */
+.lightbox {
+  position: fixed; inset: 0; z-index: 5000;
+  display: flex; flex-direction: column;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.lightbox.open { opacity: 1; pointer-events: all; }
+
+.lightbox-bg {
+  position: absolute; inset: 0;
+  background: rgba(8,8,6,0.93);
+  backdrop-filter: blur(6px);
+}
+.lightbox-panel {
+  position: relative; z-index: 1;
+  margin: auto; width: 90vw; max-width: 860px;
+  height: 90vh; display: flex; flex-direction: column;
+  background: var(--bg2); border: 1px solid #2a2a20;
+  transform: translateY(12px); transition: transform 0.25s ease;
+}
+.lightbox.open .lightbox-panel { transform: none; }
+
+.lightbox-head {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1rem 1.4rem; border-bottom: 1px solid var(--line); flex-shrink: 0;
+}
+.lightbox-meta { display: flex; flex-direction: column; gap: 0.2rem; }
+.lightbox-cat {
+  font-size: 0.5rem; letter-spacing: 0.28em; text-transform: uppercase;
+}
+.lightbox-name {
+  font-family: 'Barlow Condensed', sans-serif; font-size: 1.3rem;
+  font-weight: 700; color: var(--cream);
+}
+.lightbox-close {
+  background: none; border: 1px solid var(--line); color: var(--muted);
+  font-size: 0.9rem; width: 32px; height: 32px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: color 0.2s, border-color 0.2s; flex-shrink: 0;
+}
+.lightbox-close:hover { color: var(--text); border-color: #2e2e26; }
+
+.lightbox-frame {
+  flex: 1; overflow: hidden; position: relative;
+}
+.lightbox-frame iframe {
+  width: 100%; height: 100%; border: 0; display: block;
+}
+.lightbox-fallback {
+  position: absolute; bottom: 1rem; right: 1rem;
+  font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--orange); text-decoration: none;
+  padding: 0.4rem 0.8rem; border: 1px solid var(--orange);
+  transition: background 0.2s, color 0.2s;
+}
+.lightbox-fallback:hover { background: var(--orange); color: var(--bg); }
+
 /* ── VIDEO SECTION ── */
 #video { background: var(--bg2); border-top: 1px solid var(--line); }
 .video-featured {
@@ -397,6 +548,7 @@ nav {
   <a href="#hero" class="nav-logo">BI</a>
   <div class="nav-links">
     <a href="#zones">Domains</a>
+    <a href="#design">Design</a>
     <a href="#video">Video</a>
     <a href="#cad">CAD</a>
     <a href="#projects">Projects</a>
@@ -493,6 +645,28 @@ nav {
         <div class="stat"><div class="stat-val">USF</div><div class="stat-lbl">B.A. Media Studies / CS · '17</div></div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- ══ DESIGN ══ -->
+<section id="design">
+  <div class="section-wrap">
+    <p class="section-label reveal">03 — Graphic Design</p>
+    <h2 class="section-title reveal">Design Work</h2>
+    <p class="design-intro reveal">Signage systems, trail maps, logos, and visual communication — designed for the City of San Luis Obispo Parks & Recreation and beyond. Click any project to view.</p>
+
+    <div class="design-filters reveal">
+      <button class="design-filter active" data-filter="all">All</button>
+      <button class="design-filter" data-filter="signage">Signage</button>
+      <button class="design-filter" data-filter="maps">Maps</button>
+      <button class="design-filter" data-filter="logos">Logos</button>
+      <button class="design-filter" data-filter="misc">Misc</button>
+    </div>
+
+    <div class="design-strip-outer reveal">
+      <div class="design-strip" id="design-strip"></div>
+    </div>
+    <p class="design-scroll-hint" id="design-scroll-hint">← Scroll to explore →</p>
   </div>
 </section>
 
@@ -746,7 +920,121 @@ nav {
   </div>
 </section>
 
+<!-- ══ DESIGN LIGHTBOX ══ -->
+<div class="lightbox" id="design-lightbox" role="dialog" aria-modal="true">
+  <div class="lightbox-bg" id="lightbox-bg"></div>
+  <div class="lightbox-panel">
+    <div class="lightbox-head">
+      <div class="lightbox-meta">
+        <span class="lightbox-cat" id="lightbox-cat"></span>
+        <span class="lightbox-name" id="lightbox-name"></span>
+      </div>
+      <button class="lightbox-close" id="lightbox-close" aria-label="Close">✕</button>
+    </div>
+    <div class="lightbox-frame">
+      <iframe id="lightbox-iframe" src="" title="Design preview" allowfullscreen></iframe>
+      <a class="lightbox-fallback" id="lightbox-fallback" href="#" target="_blank">Open in new tab ↗</a>
+    </div>
+  </div>
+</div>
+
 <script>
+// ══ DESIGN GALLERY ══
+// To add a project: add an entry to this array and upload the file to /graphics/ in your repo
+const DESIGN_PROJECTS = [
+  {
+    title:    'Laguna Lake Bike Park',
+    subtitle: 'Full Signage Package · 12 pages',
+    category: 'signage',
+    year:     '2023',
+    file:     'graphics/Laguna_Bike_Park_-_ALL_SIGNAGE_V2.pdf'
+  },
+  // Add more projects here ↓
+  // { title: 'Project Name', subtitle: 'Description', category: 'maps', year: '2022', file: 'graphics/yourfile.pdf' },
+];
+
+const CAT_COLORS = {
+  signage: '#3e6e4a',
+  maps:    '#d4881a',
+  logos:   '#6a4a8c',
+  misc:    '#787e84',
+};
+
+function buildDesignCards() {
+  const strip = document.getElementById('design-strip');
+  if (!strip) return;
+  strip.innerHTML = '';
+  DESIGN_PROJECTS.forEach((p, i) => {
+    const color = CAT_COLORS[p.category] || '#787e84';
+    const card = document.createElement('div');
+    card.className = 'design-card';
+    card.dataset.category = p.category;
+    card.innerHTML = `
+      <div class="design-card-accent" style="background:${color}"></div>
+      <div class="design-card-body">
+        <span class="design-card-cat" style="color:${color};border-color:${color}40">${p.category}</span>
+        <div class="design-card-title">${p.title}</div>
+        <div class="design-card-sub">${p.subtitle || ''}</div>
+      </div>
+      <div class="design-card-footer">
+        <span class="design-card-year">${p.year}</span>
+        <span class="design-card-cta">View →</span>
+      </div>
+      <div class="design-card-num">${String(i + 1).padStart(2, '0')}</div>
+    `;
+    card.addEventListener('click', () => openLightbox(p, color));
+    strip.appendChild(card);
+  });
+}
+
+// Filter
+document.querySelectorAll('.design-filter').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.design-filter').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const f = btn.dataset.filter;
+    document.querySelectorAll('.design-card').forEach(c => {
+      c.classList.toggle('hidden', f !== 'all' && c.dataset.category !== f);
+    });
+  });
+});
+
+// Fade scroll hint after first scroll
+const strip = document.getElementById('design-strip');
+const hint  = document.getElementById('design-scroll-hint');
+if (strip && hint) {
+  strip.addEventListener('scroll', () => { hint.style.opacity = '0'; }, { once: true });
+}
+
+// Lightbox
+const lightbox = document.getElementById('design-lightbox');
+const lbIframe = document.getElementById('lightbox-iframe');
+const lbName   = document.getElementById('lightbox-name');
+const lbCat    = document.getElementById('lightbox-cat');
+const lbFallback = document.getElementById('lightbox-fallback');
+
+function openLightbox(project, color) {
+  lbName.textContent = project.title;
+  lbCat.textContent  = project.category.toUpperCase();
+  lbCat.style.color  = color;
+  lbIframe.src       = project.file;
+  lbFallback.href    = project.file;
+  lightbox.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  lightbox.classList.remove('open');
+  document.body.style.overflow = '';
+  setTimeout(() => { lbIframe.src = ''; }, 300);
+}
+
+document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+document.getElementById('lightbox-bg').addEventListener('click', closeLightbox);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+buildDesignCards();
+
 // ── STL Viewer ──
 function initSTLViewer({ containerId, canvasId, loadingId, hintId, stlPath, azimuth = 45, elevation = 35, geomRotation = { x: 0, y: 0, z: 0 }, readoutAz = null, readoutEl = null, zoom = 1 }) {
   const container = document.getElementById(containerId);
