@@ -194,36 +194,62 @@ nav {
 
 /* ── FAN ── */
 .fan-stage {
-  position: relative;
-  height: 380px;
   display: flex;
   align-items: flex-end;
-  justify-content: center;
-  margin: 0 0 1.5rem;
+  gap: 1.8rem;
+  overflow-x: auto;
+  overflow-y: visible;
+  padding: 80px 2vw 2.5rem;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
+.fan-stage::-webkit-scrollbar { display: none; }
 
 .fan-card {
-  position: absolute;
-  width: 190px; height: 265px;
+  position: relative;
+  flex-shrink: 0;
+  height: 265px;
+  width: 190px;
   cursor: pointer;
   transform-origin: bottom center;
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  user-select: none;
+}
+
+/* CSS fallback cards keep the rectangular style */
+.fan-card:not(.has-thumb) {
   border: 1px solid rgba(255,255,255,0.09);
   overflow: hidden;
   box-shadow: 0 6px 28px rgba(0,0,0,0.55);
-  user-select: none;
 }
-.fan-card:hover { box-shadow: 0 22px 60px rgba(0,0,0,0.85); }
-
-/* Image face */
-.fan-face-img {
-  position: absolute; inset: 0;
-  background-size: cover;
-  background-position: top center;
-  background-color: #0a0a08;
+.fan-card:not(.has-thumb):hover {
+  box-shadow: 0 22px 60px rgba(0,0,0,0.85);
 }
 
-/* CSS fallback face (no thumbnail) */
+/* Thumbnail cards — transparent, shadow follows PNG alpha */
+.fan-card.has-thumb {
+  border: none;
+  background: transparent;
+}
+
+.fan-card-clip {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.fan-img {
+  display: block;
+  width: 100%; height: 100%;
+  object-fit: fill;
+  filter: drop-shadow(0 6px 22px rgba(0,0,0,0.75));
+  transition: filter 0.3s ease;
+}
+.fan-card.has-thumb:hover .fan-img {
+  filter: drop-shadow(0 20px 48px rgba(0,0,0,0.95));
+}
+
+/* CSS fallback face */
 .fan-face-css {
   position: absolute; inset: 0;
   display: flex; flex-direction: column;
@@ -964,6 +990,30 @@ const DESIGN_PROJECTS = [
     thumbnail: 'graphics/thumbs/LLBP_Rules.jpg'
   },
   {
+    title:     'LLBP Pump Track',
+    subtitle:  'Kids Pump Track Sign',
+    category:  'signage',
+    year:      '2023',
+    file:      'graphics/LLBP_Pump.pdf',
+    thumbnail: 'graphics/thumbs/LLBP_Pump.jpg'
+  },
+  {
+    title:     'LLBP Loop Trail',
+    subtitle:  'Mountain Bike Loop Trail Sign',
+    category:  'signage',
+    year:      '2023',
+    file:      'graphics/LLBP_Loop.pdf',
+    thumbnail: 'graphics/thumbs/LLBP_Loop.jpg'
+  },
+  {
+    title:     'LLBP Park Map',
+    subtitle:  'Map Overview & Trail Guide',
+    category:  'maps',
+    year:      '2023',
+    file:      'graphics/LLBP_Map.pdf',
+    thumbnail: 'graphics/thumbs/LLBP_Map.png'
+  },
+  {
     title:     'SLO Open Space Trail Network',
     subtitle:  'Wayfinding & Kiosk Signage',
     category:  'signage',
@@ -1029,23 +1079,48 @@ function buildFan(projects) {
   stage.innerHTML = '';
   fanCards = [];
 
+  const MAX_H = 265;
+  let pending = projects.filter(p => p.thumbnail).length;
+  const done = () => { if (--pending <= 0) { /* sizes settled */ } };
+
   projects.forEach((p, i) => {
     const color = CAT_COLORS[p.category] || '#787e84';
+    const tilt  = (i % 2 === 0 ? -3 : 3) + (i % 3 === 0 ? -1 : 1); // gentle alternating tilt
     const card  = document.createElement('div');
-    card.className   = 'fan-card';
+    card.className = 'fan-card';
     card.dataset.category = p.category;
+    card.style.height    = MAX_H + 'px';
+    card.style.width     = '190px';
+    card.style.transform = `rotate(${tilt}deg)`;
 
     if (p.thumbnail) {
-      card.innerHTML = `
-        <div class="fan-face-img" style="background-image:url(${p.thumbnail})"></div>
-        <div class="fan-overlay">
-          <span class="fan-overlay-cat" style="color:${color}">${p.category}</span>
-          <span class="fan-overlay-title">${p.title}</span>
-          <span class="fan-overlay-cta">Click to view →</span>
-        </div>`;
+      card.classList.add('has-thumb');
+      const clip = document.createElement('div');
+      clip.className = 'fan-card-clip';
+
+      const img = new Image();
+      img.className = 'fan-img';
+      img.alt = p.title;
+      img.onload = () => {
+        const w = Math.round(MAX_H * img.naturalWidth / img.naturalHeight);
+        card.style.width = Math.max(130, Math.min(380, w)) + 'px';
+        done();
+      };
+      img.onerror = done;
+      img.src = p.thumbnail;
+
+      const overlay = document.createElement('div');
+      overlay.className = 'fan-overlay';
+      overlay.innerHTML = `
+        <span class="fan-overlay-cat" style="color:${color}">${p.category}</span>
+        <span class="fan-overlay-title">${p.title}</span>
+        <span class="fan-overlay-cta">Click to view →</span>`;
+
+      clip.append(img, overlay);
+      card.append(clip);
     } else {
       card.innerHTML = `
-        <div class="fan-face-css" style="background:${color}18">
+        <div class="fan-face-css" style="background:${color}18;position:absolute;inset:0;">
           <div class="fan-face-accent" style="background:${color}"></div>
           <span class="fan-face-cat" style="color:${color}">${p.category}</span>
           <div class="fan-face-title">${p.title}</div>
@@ -1059,42 +1134,18 @@ function buildFan(projects) {
         </div>`;
     }
 
-    card.addEventListener('mouseenter', () => applyFan(fanCards, i));
-    card.addEventListener('mouseleave', () => applyFan(fanCards, -1));
-    card.addEventListener('click',      () => openLightbox(p, color));
+    card.addEventListener('mouseenter', () => {
+      card.style.transform = 'translateY(-55px) rotate(0deg) scale(1.06)';
+      card.style.zIndex = '10';
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = `rotate(${tilt}deg)`;
+      card.style.zIndex = '';
+    });
+    card.addEventListener('click', () => openLightbox(p, color));
+
     stage.appendChild(card);
     fanCards.push(card);
-  });
-
-  applyFan(fanCards, -1);
-}
-
-function applyFan(cards, hoveredIdx) {
-  const n = cards.length;
-  if (!n) return;
-  const spread  = Math.min(10, (n - 1) * 5);  // max degrees per step
-  const xSpread = Math.min(60, (n - 1) * 32); // max px horizontal
-
-  cards.forEach((card, i) => {
-    const mid = (n - 1) / 2;
-    const t   = n > 1 ? (i - mid) / mid : 0;   // –1 → +1
-
-    const baseAngle = t * spread;
-    const baseX     = t * xSpread;
-    const baseY     = t * t * 20;               // parabolic drop at edges
-    const baseZ     = n - Math.round(Math.abs(t) * n);
-
-    if (hoveredIdx === i) {
-      card.style.transform = `translateX(${baseX}px) translateY(-72px) rotate(0deg) scale(1.1)`;
-      card.style.zIndex    = 100;
-    } else if (hoveredIdx >= 0) {
-      const push = (i < hoveredIdx ? -1 : 1) * Math.max(0, 14 - Math.abs(i - hoveredIdx) * 5);
-      card.style.transform = `translateX(${baseX + push}px) translateY(${baseY}px) rotate(${baseAngle}deg)`;
-      card.style.zIndex    = baseZ;
-    } else {
-      card.style.transform = `translateX(${baseX}px) translateY(${baseY}px) rotate(${baseAngle}deg)`;
-      card.style.zIndex    = baseZ;
-    }
   });
 }
 
