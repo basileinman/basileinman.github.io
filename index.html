@@ -417,6 +417,30 @@ nav {
   white-space: nowrap;
 }
 
+/* ── MUSIC SECTION ── */
+#music { border-top: 1px solid var(--line); }
+
+.music-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.music-track { display: flex; flex-direction: column; gap: 0.8rem; }
+
+.music-embed {
+  border: 1px solid var(--line);
+  overflow: hidden;
+  background: #0a0a08;
+}
+
+.music-embed iframe { display: block; width: 100%; border: 0; }
+
+.music-track-label { font-size: 0.62rem; line-height: 1.7; color: var(--muted); }
+.music-track-label strong { display: block; color: var(--text); font-weight: 400; font-size: 0.7rem; margin-bottom: 0.15rem; }
+
+@media (max-width: 900px) { .music-grid { grid-template-columns: 1fr; } }
+
 /* ── CAD SECTION ── */
 #cad { border-top: 1px solid var(--line); }
 .cad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
@@ -582,6 +606,7 @@ nav {
     <a href="#zones">Domains</a>
     <a href="#design">Design</a>
     <a href="#video">Video</a>
+    <a href="#music">Music</a>
     <a href="#cad">CAD</a>
     <a href="#projects">Projects</a>
     <a href="#resume">Resume</a>
@@ -636,7 +661,6 @@ nav {
     </div>
     <div class="zone z-music" data-num="03">
       <div class="zone-accent-bar"></div>
-      <div class="zone-coming">Coming Soon</div>
       <svg class="zone-glyph" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="16" stroke="#6a4a8c" stroke-width="1.5" fill="none"/><circle cx="20" cy="20" r="8" stroke="#6a4a8c" stroke-width="1" fill="none"/><circle cx="20" cy="20" r="2" fill="#6a4a8c"/></svg>
       <p class="zone-cat">Audio & Performance</p>
       <h3 class="zone-name">Music Producer<br>& DJ</h3>
@@ -734,6 +758,54 @@ nav {
         </div>
         <div class="video-label"><strong>YouTube</strong>YouTube · Video 2</div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ MUSIC ══ -->
+<section id="music">
+  <div class="section-wrap">
+    <p class="section-label reveal">04 — Audio</p>
+    <h2 class="section-title reveal">Music & Production</h2>
+
+    <div class="music-grid">
+
+      <div class="music-track reveal">
+        <div class="music-embed">
+          <iframe height="300" scrolling="no" allow="autoplay"
+            src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/bassmilk/disintegration-iv-x-borders-x-gone-bn-mashup-basseel-remake&color=%236a4a8c&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=true">
+          </iframe>
+        </div>
+        <div class="music-track-label">
+          <strong>Disintegration IV × Borders × Gone</strong>
+          BN Mashup · Basseel Remake
+        </div>
+      </div>
+
+      <div class="music-track reveal">
+        <div class="music-embed">
+          <iframe height="300" scrolling="no" allow="autoplay"
+            src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/bassmilk/northern-cree-singers-all-life-is-interrelated-this-is-america-bassnectar-edit-baz-beats-remake&color=%236a4a8c&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=true">
+          </iframe>
+        </div>
+        <div class="music-track-label">
+          <strong>Northern Cree × All Life Is Interrelated × This Is America</strong>
+          Bassnectar Edit · Baz Beats Remake
+        </div>
+      </div>
+
+      <div class="music-track reveal">
+        <div class="music-embed">
+          <iframe height="300" scrolling="no" allow="autoplay"
+            src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/bassmilk/the-widdler-tricks-x-masta-ace-the-b-side-x-pharoahe-monch-simon-says&color=%236a4a8c&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=true">
+          </iframe>
+        </div>
+        <div class="music-track-label">
+          <strong>Tricks × The B Side × Simon Says</strong>
+          The Widdler · Masta Ace · Pharoahe Monch
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
@@ -918,7 +990,7 @@ nav {
         Activate form: go to formspree.io → New Form → copy your ID
         Replace YOUR_FORM_ID below (e.g. xpwzgkla)
       -->
-      <form class="contact-form" id="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+      <form class="contact-form" id="contact-form" action="https://formspree.io/f/xgoqnpeb" method="POST">
         <div class="form-row">
           <div class="form-field"><label for="name">Name</label><input type="text" id="name" name="name" placeholder="Your name" required></div>
           <div class="form-field"><label for="email">Email</label><input type="email" id="email" name="email" placeholder="your@email.com" required></div>
